@@ -1,11 +1,15 @@
 import { Badge, Card, Flex, Text } from "@radix-ui/themes";
 
-export default function ResultCard() {
+type ResultCardProps = {
+  experimentTitle: string;
+};
+
+export default function ResultCard({ experimentTitle }: ResultCardProps) {
   return (
     <Card variant="surface" style={{ width: "85%" }}>
       <Flex direction={"column"} gap={"2"}>
         <Text size={"4"} weight={"medium"}>
-          scRNA-seq ananassae testis
+          {experimentTitle}
         </Text>
         <Flex gap={"2"}>
           <Badge>SRP449767</Badge>

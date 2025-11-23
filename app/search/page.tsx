@@ -1,5 +1,6 @@
 "use client";
 import ResultCard from "@/components/result-card";
+import { SearchResult } from "@/utils/types";
 import {
   CaretSortIcon,
   GitHubLogoIcon,
@@ -11,16 +12,37 @@ import {
   Flex,
   IconButton,
   Link as RadixLink,
+  Spinner,
+  Text,
   TextField,
 } from "@radix-ui/themes";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q"));
+  const [searchResults, setSearchResults] = useState<SearchResult[]>();
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  //   const [numSearchResults, setNumSearchResults] = useState(0);
+
+  useEffect(() => {
+    if (query) {
+      fetch("http://localhost:8000/")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            setIsError(true);
+            setErrorMessage(data.error);
+          } else {
+            setSearchResults(data);
+          }
+        });
+    }
+  }, [query]);
 
   return (
     <>
@@ -79,15 +101,25 @@ export default function SearchPage() {
         style={{ marginLeft: "8.2rem" }}
         direction={"column"}
       >
-        <ResultCard />
-        <ResultCard />
-        <ResultCard />
-        <ResultCard />
-        <ResultCard />
-        <ResultCard />
-        <ResultCard />
-        <ResultCard />
-        <ResultCard />
+        {searchResults ? (
+          searchResults.map((searchResult) => (
+            <ResultCard
+              key={searchResult.experiment_title}
+              experimentTitle={searchResult.experiment_title}
+            />
+          ))
+        ) : isError ? (
+          <Flex gap={"2"} align={"center"} justify={"center"}>
+            <Text color="red">
+              {errorMessage || "An error occurred while searching"}
+            </Text>
+          </Flex>
+        ) : (
+          <Flex gap={"2"} align={"center"} justify={"center"}>
+            <Spinner size={"3"} />
+            <Text>Search in progress</Text>
+          </Flex>
+        )}
       </Flex>
     </>
   );
