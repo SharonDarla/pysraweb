@@ -88,8 +88,10 @@ export default function SearchPage() {
             <CaretSortIcon />
           </IconButton>
         </Flex>
-        <RadixLink href="#">Saket Lab</RadixLink>
-        <RadixLink href="#">Docs</RadixLink>
+        <RadixLink href="https://saketlab.in/">Saket Lab</RadixLink>
+        <RadixLink href="https://saket-choudhary.me/pysradb/index.html">
+          Docs
+        </RadixLink>
         <Button>
           <GitHubLogoIcon /> Star on GitHub
         </Button>
