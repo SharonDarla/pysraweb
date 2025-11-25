@@ -23,7 +23,7 @@ export default function ResultCard({ experimentTitle }: ResultCardProps) {
           <Separator orientation={"vertical"} />
           <Text>10 Experiments</Text>
           <Separator orientation={"vertical"} />
-          <Text>100 Runs</Text>
+          <Text>100 Total runs</Text>
         </Flex>
       </Flex>
     </Card>

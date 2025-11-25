@@ -46,7 +46,6 @@ export default function SearchBar({
         </Link>
         <form style={{ width: "70%" }}>
           <TextField.Root
-            placeholder="all scRNA-seq datasets from 2024 to 2023 which use 10x technology"
             size="3"
             onChange={(e) => setQuery(e.target.value)}
             value={query ?? ""}
