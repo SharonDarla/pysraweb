@@ -1,10 +1,15 @@
 import { Badge, Card, Flex, Separator, Text } from "@radix-ui/themes";
+import { useRouter } from "next/navigation";
 
 type ResultCardProps = {
   experimentTitle: string;
 };
 
 export default function ResultCard({ experimentTitle }: ResultCardProps) {
+  const router = useRouter();
+  const handleClick = () => {
+    router.push(`/project?srp=${"SRP449767"}`);
+  };
   return (
     <Card variant="surface" style={{ width: "85%" }}>
       <Flex direction={"column"} gap={"2"}>
@@ -13,6 +18,7 @@ export default function ResultCard({ experimentTitle }: ResultCardProps) {
             size={"5"}
             weight={"medium"}
             style={{ cursor: "pointer", width: "100%" }}
+            onClick={handleClick}
           >
             {experimentTitle}
           </Text>

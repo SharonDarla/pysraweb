@@ -1,16 +1,5 @@
-import {
-  CaretSortIcon,
-  GitHubLogoIcon,
-  MagnifyingGlassIcon,
-  MixerHorizontalIcon,
-} from "@radix-ui/react-icons";
-import {
-  Button,
-  Flex,
-  IconButton,
-  Link as RadixLink,
-  TextField,
-} from "@radix-ui/themes";
+import { GitHubLogoIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Button, Flex, Link as RadixLink, TextField } from "@radix-ui/themes";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -55,18 +44,12 @@ export default function SearchBar({
             </TextField.Slot>
           </TextField.Root>
         </form>
-        <IconButton variant="outline">
-          <MixerHorizontalIcon />
-        </IconButton>
-        <IconButton variant="outline">
-          <CaretSortIcon />
-        </IconButton>
       </Flex>
       <RadixLink href="https://saketlab.in/">Saket Lab</RadixLink>
       <RadixLink href="https://saket-choudhary.me/pysradb/index.html">
         Docs
       </RadixLink>
-      <Button>
+      <Button variant="outline">
         <GitHubLogoIcon /> Star on GitHub
       </Button>
     </Flex>
