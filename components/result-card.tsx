@@ -1,6 +1,5 @@
 import { Experiment } from "@/utils/types";
 import { Badge, Card, Flex, Separator, Text } from "@radix-ui/themes";
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 type ResultCardProps = {
@@ -10,13 +9,11 @@ type ResultCardProps = {
 
 export default function ResultCard({ studyAcc, experiments }: ResultCardProps) {
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const handleClick = () => {
-    queryClient.setQueryData(["experiments", studyAcc], experiments);
     router.push(`/project?srp=${studyAcc}`);
   };
-  const experimentTitle = experiments[0].experiment_title;
+  const experimentTitle = experiments[0].study_study_title;
   const numExperiments = experiments.length;
 
   return (

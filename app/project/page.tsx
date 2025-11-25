@@ -38,8 +38,6 @@ const fetchExperiments = async (studyAcc: string | null) => {
     throw new Error("Network error");
   }
   const data = await res.json();
-  console.log(data[studyAcc]);
-
   return data[studyAcc] as Experiment[];
 };
 
@@ -52,8 +50,8 @@ export default function ProjectPage() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["study", studyAcc],
-    queryFn: () => fetchExperiments(studyAcc), // fallback if cache empty
+    queryKey: ["experiments", studyAcc],
+    queryFn: () => fetchExperiments(studyAcc),
     enabled: !!studyAcc,
   });
   return (
