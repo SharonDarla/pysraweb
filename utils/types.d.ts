@@ -1,5 +1,4 @@
-export type SearchResult = {
-  study_accession: string;
+export type Experiment = {
   experiment_accession: string;
   experiment_title: string;
   sample_taxon_id: string;
@@ -16,3 +15,5 @@ export type SearchResult = {
   run_1_total_spots: string;
   run_1_total_bases: string;
 };
+
+export type SearchResults = Record<string, [Experiment]>;

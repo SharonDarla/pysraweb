@@ -1,33 +1,43 @@
 "use client";
 import ResultCard from "@/components/result-card";
 import SearchBar from "@/components/search-bar";
-import { SearchResult } from "@/utils/types";
-import { Flex } from "@radix-ui/themes";
+import { SearchResults } from "@/utils/types";
+import { Flex, Spinner, Text } from "@radix-ui/themes";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q"));
-  const [searchResults, setSearchResults] = useState<SearchResult[]>();
+  const [searchResults, setSearchResults] = useState<SearchResults>();
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  //   const [numSearchResults, setNumSearchResults] = useState(0);
+  const [isSearchMade, setIsSearchMade] = useState(false);
 
-  // useEffect(() => {
-  //   if (query) {
-  //     fetch(`http://10.195.102.16:8000/?q=${encodeURIComponent(query)}`)
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         if (data.error) {
-  //           setIsError(true);
-  //           setErrorMessage(data.error);
-  //         } else {
-  //           setSearchResults(data);
-  //         }
-  //       });
-  //   }
-  // }, [query]);
+  useEffect(() => {
+    const fetchResults = () => {
+      // TODO: Use tanstack query
+      if (query && !isSearchMade) {
+        // fetch(`http://10.195.102.16:8000/search?q=${encodeURIComponent(query)}`)
+        //   .then((res) => res.json())
+        //   .then((data) => {
+        //     console.log(data);
+
+        //     if (data.error) {
+        //       setIsError(true);
+        //       setErrorMessage(data.error);
+        //     } else {
+        //       setSearchResults(data);
+        //     }
+        //   });
+
+        console.log(query);
+        setIsSearchMade(true);
+      }
+    };
+
+    fetchResults();
+  }, []);
 
   return (
     <>
@@ -37,16 +47,18 @@ export default function SearchPage() {
       <Flex
         gap={"4"}
         p="3"
-        style={{ marginLeft: "8.2rem", width: "60%" }}
+        style={{ marginLeft: "8.2rem", width: "65%" }}
         direction={"column"}
       >
-        <ResultCard experimentTitle="Ampliseq of SARS-CoV-2" />
-        <ResultCard experimentTitle="Severe acute respiratory syndrome coronavirus 2" />
-        {/* {searchResults ? (
-          searchResults.map((searchResult) => (
+        {/* <ResultCard experimentTitle="Ampliseq of SARS-CoV-2" />
+        <ResultCard experimentTitle="Severe acute respiratory syndrome coronavirus 2" /> */}
+        {searchResults ? (
+          Object.entries(searchResults).flatMap(([studyAcc, results]) => (
             <ResultCard
-              key={searchResult.experiment_title}
-              experimentTitle={searchResult.experiment_title}
+              key={studyAcc}
+              studyAcc={studyAcc}
+              numExperiments={results.length}
+              experimentTitle={results[0].experiment_title}
             />
           ))
         ) : isError ? (
@@ -56,11 +68,16 @@ export default function SearchPage() {
             </Text>
           </Flex>
         ) : (
-          <Flex gap={"2"} align={"center"} justify={"center"}>
+          <Flex
+            gap={"2"}
+            align={"center"}
+            style={{ width: "65%" }}
+            justify={"center"}
+          >
             <Spinner size={"3"} />
             <Text>Search in progress</Text>
           </Flex>
-        )} */}
+        )}
       </Flex>
     </>
   );
