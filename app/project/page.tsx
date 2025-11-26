@@ -7,17 +7,12 @@ import TableRow from "@/components/table-row";
 import { SERVER_URL } from "@/utils/constants";
 import exportExperimentsToCsv from "@/utils/exportCsv";
 import { Experiment } from "@/utils/types";
-import {
-  CaretSortIcon,
-  DownloadIcon,
-  MixerHorizontalIcon,
-} from "@radix-ui/react-icons";
+import { DownloadIcon } from "@radix-ui/react-icons";
 import {
   Badge,
   Button,
   Flex,
   Grid,
-  IconButton,
   Separator,
   Spinner,
   Table,
@@ -117,12 +112,13 @@ export default function ProjectPage() {
                   {experiments[0].study_title}
                 </Text>
                 <Flex gap="2">
-                  <IconButton variant="outline">
+                  {/* TODO: Maybe move these buttons beside the table? */}
+                  {/* <IconButton variant="outline">
                     <MixerHorizontalIcon />
                   </IconButton>
                   <IconButton variant="outline">
                     <CaretSortIcon />
-                  </IconButton>
+                  </IconButton> */}
                   <Button
                     onClick={() =>
                       exportExperimentsToCsv(
@@ -197,9 +193,27 @@ export default function ProjectPage() {
             >
               <Flex align="center" gap="2">
                 <Text weight="medium" size="6">
+                  Linked publications
+                </Text>
+              </Flex>
+              <Grid columns="4" gap="4">
+                <SimilarCard />
+                <SimilarCard />
+                <SimilarCard />
+              </Grid>
+            </Flex>
+
+            <Flex
+              style={{ marginLeft: "8.2rem", width: "80%", marginTop: "1rem" }}
+              py="3"
+              direction="column"
+              gap="4"
+            >
+              <Flex align="center" gap="2">
+                <Text weight="medium" size="6">
                   Similar projects
                 </Text>
-                <InfoPopOver infoText="Project similarity is measured based on metadata and other attributes." />
+                <InfoPopOver infoText="Project similarity is measured based on metadata and other attributes" />
               </Flex>
               <Grid columns="4" gap="4">
                 <SimilarCard />
