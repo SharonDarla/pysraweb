@@ -136,7 +136,11 @@ export default function ProjectPage() {
                   {studyAcc}
                 </Badge>
                 <Separator orientation="vertical" />
-                <Text>{experiments.length} Experiments</Text>
+                <Text>
+                  {experiments && experiments.length === 1
+                    ? "1 Experiment"
+                    : `${experiments?.length ?? 0} Experiments`}
+                </Text>
                 <Separator orientation="vertical" />
                 <Text>Published on 20th October, 2020</Text>
               </Flex>
