@@ -136,6 +136,8 @@ export default function ProjectPage() {
                   {studyAcc}
                 </Badge>
                 <Separator orientation="vertical" />
+                <Text>{experiments.length} Experiments</Text>
+                <Separator orientation="vertical" />
                 <Text>Published on 20th October, 2020</Text>
               </Flex>
               {/* <Flex>
