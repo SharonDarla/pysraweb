@@ -3,6 +3,7 @@ import { Button, Flex, Link as RadixLink, TextField } from "@radix-ui/themes";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import ThemeToggle from "./theme-toggle";
 
 export default function SearchBar({
   searchQuery,
@@ -45,6 +46,7 @@ export default function SearchBar({
           </TextField.Root>
         </form>
       </Flex>
+      <ThemeToggle />
       <RadixLink href="https://saketlab.in/">Saket Lab</RadixLink>
       <RadixLink href="https://saket-choudhary.me/pysradb/index.html">
         Docs

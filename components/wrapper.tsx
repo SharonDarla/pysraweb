@@ -11,7 +11,9 @@ export default function Wrapper({
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
-      <Theme accentColor="indigo">{children}</Theme>
+      <Theme accentColor="indigo" appearance="light">
+        {children}
+      </Theme>
     </QueryClientProvider>
   );
 }
