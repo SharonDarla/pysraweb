@@ -13,12 +13,14 @@ import {
   Button,
   Flex,
   Grid,
+  Link,
   Separator,
   Spinner,
   Table,
   Text,
 } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
 const fetchExperiments = async (studyAcc: string | null) => {
@@ -74,7 +76,7 @@ export default function ProjectPage() {
           justify="center"
         >
           <Spinner size="3" />
-          <Text>Search in progress</Text>
+          <Text>Getting metadata</Text>
         </Flex>
       )}
 
@@ -83,13 +85,21 @@ export default function ProjectPage() {
         <Flex
           gap="2"
           align="center"
-          style={{ width: "65%", marginLeft: "8.2rem", marginTop: "1rem" }}
           justify="center"
+          height={"20rem"}
+          direction={"column"}
         >
-          <Text color="red">
-            {error instanceof Error
-              ? error.message
-              : "An error occurred while loading the project"}
+          <Image
+            src="./controls.svg"
+            alt="empty box"
+            width={"100"}
+            height={"100"}
+          />
+          <Text color="gray" size={"6"} weight={"bold"}>
+            Failed to connect
+          </Text>
+          <Text color="gray" size={"2"}>
+            Check your network connection
           </Text>
         </Flex>
       )}
@@ -233,11 +243,27 @@ export default function ProjectPage() {
         !isLoading &&
         !isError &&
         (!experiments || experiments.length === 0) && (
-          <div style={{ paddingTop: "1rem" }}>
-            <Text color="gray" style={{ marginLeft: "8.2rem" }}>
-              No experiments found for project {studyAcc}
+          <Flex
+            align="center"
+            justify="center"
+            direction={"column"}
+            height={"20rem"}
+          >
+            {/* Credits: https://www.svgrepo.com/svg/489659/empty-box */}
+            <Image
+              src="./empty-box.svg"
+              alt="empty box"
+              width={"100"}
+              height={"100"}
+            />
+            <Text color="gray" size={"6"} weight={"bold"}>
+              No metadata found
             </Text>
-          </div>
+            <Text color="gray" size={"2"} style={{ textAlign: "center" }}>
+              If you think this shouldn&apos;t have <br /> happened mail us at{" "}
+              <Link href="mailto:labmail@mail.com">labmail@mail.com</Link>
+            </Text>
+          </Flex>
         )}
     </>
   );
