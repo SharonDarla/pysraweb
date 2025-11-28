@@ -5,7 +5,7 @@ import { Flex } from "@radix-ui/themes";
 
 export default function Home() {
   return (
-    <Flex style={{ height: "100svh" }} direction="column">
+    <Flex style={{ height: "100dvh" }} direction="column">
       <Navabar />
       <HomeSearchBar />
       {/* <Footer /> */}
