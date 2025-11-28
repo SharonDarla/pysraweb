@@ -162,8 +162,10 @@ export default function ProjectPage() {
                     : `${experiments?.length ?? 0} Experiments`}
                 </Text>
                 <Box display={{ initial: "none", md: "block" }}>
-                  <Separator orientation="vertical" />
-                  <Text>Published on 20th October, 2020</Text>
+                  <Flex align={"center"} gap={"2"}>
+                    <Separator orientation="vertical" />
+                    <Text>Published on 20th October, 2020</Text>
+                  </Flex>
                 </Box>
               </Flex>
               <Box display={{ initial: "block", md: "none" }}>
