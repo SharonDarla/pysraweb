@@ -9,6 +9,7 @@ export default function Navabar() {
       <Flex gap={"4"} align={"center"}>
         <Link href="https://saket-choudhary.me/pysradb/index.html">Docs</Link>
         <Link href="#">Paper</Link>
+        <Link href="https://saketlab.in/">Saket Lab</Link>
       </Flex>
       <Flex
         display={{ initial: "none", sm: "flex" }}
@@ -16,7 +17,6 @@ export default function Navabar() {
         align={"center"}
       >
         <ThemeToggle />
-        <Link href="https://saketlab.in/">Saket Lab</Link>
         <GitHubButton />
       </Flex>
       <Box display={{ initial: "block", sm: "none" }}>
