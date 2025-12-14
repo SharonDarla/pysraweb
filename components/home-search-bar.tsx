@@ -30,7 +30,12 @@ export default function HomeSearchBar() {
           alt="pysradb logo"
           width={526}
           height={233}
-          style={{ width: "100%", height: "auto" }}
+          style={{
+            width: "100%",
+            height: "auto",
+            backgroundColor: "transparent",
+          }}
+          unoptimized
         />
       </Box>
       <Box width={{ initial: "85%", md: "60%" }}>

@@ -25,6 +25,7 @@ export default function SearchBar({
         top: 0,
         zIndex: 50,
         boxShadow: "0 1px 0 rgba(0,0,0,0.06)",
+        backgroundColor: "transparent",
       }}
     >
       <Flex
@@ -33,12 +34,18 @@ export default function SearchBar({
         flexGrow={"1"}
         direction={{ initial: "column", md: "row" }}
       >
-        <Link href={"/"}>
+        <Link href={"/"} style={{ width: "6.2rem" }}>
           <Image
             src="/pysradb_v3.png"
             alt="pysradb logo"
             width={116}
             height={50}
+            style={{
+              width: "100%",
+              height: "auto",
+              backgroundColor: "transparent",
+            }}
+            unoptimized
           />
         </Link>
         <Box width={{ initial: "85%", md: "70%" }}>
