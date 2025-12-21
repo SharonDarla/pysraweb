@@ -87,11 +87,8 @@ export default function HomeSearchBar() {
                   <label>Scientific name</label>
                   <TextField.Root placeholder="homo sapiens" />
 
-                  <label>Strain</label>
-                  <TextField.Root placeholder="homo sapiens" />
-
-                  <label>Phenotype</label>
-                  <TextField.Root placeholder="homo sapiens" />
+                  <label>Technology</label>
+                  <TextField.Root placeholder="Illumina" />
 
                   <label>Tissue/organ</label>
                   <TextField.Root placeholder="blood" />
@@ -104,14 +101,17 @@ export default function HomeSearchBar() {
 
                   {!hideFilters && (
                     <>
+                      <label>Phenotype</label>
+                      <TextField.Root placeholder="homo sapiens" />
+
                       <label>Disease Stage</label>
                       <TextField.Root placeholder="Diabetes" />
 
+                      <label>Strain</label>
+                      <TextField.Root placeholder="homo sapiens" />
+
                       <label>Treatment</label>
                       <TextField.Root placeholder="Diabetes" />
-
-                      <label>Technology</label>
-                      <TextField.Root placeholder="Illumina" />
 
                       <label>Ethnicity</label>
                       <TextField.Root placeholder="Asian" />
