@@ -69,11 +69,7 @@ export default function SearchBar({
         align={"center"}
         display={{ initial: "none", md: "flex" }}
       >
-        {/* <RadixLink href="https://saket-choudhary.me/pysradb/index.html">
-        Docs
-      </RadixLink> */}
         <ThemeToggle />
-        {/* <RadixLink href="https://saketlab.in/">Saket Lab</RadixLink> */}
         <GitHubButton />
       </Flex>
     </Flex>

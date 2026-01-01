@@ -5,14 +5,14 @@ type ResultCardProps = {
   accesssion: string;
   title: string | null;
   summary: string | null;
-  published_at: Date | null;
+  updated_at: Date | null;
 };
 
 export default function ResultCard({
   accesssion,
   title,
   summary,
-  published_at,
+  updated_at,
 }: ResultCardProps) {
   const router = useRouter();
 
@@ -38,7 +38,14 @@ export default function ResultCard({
         <Text truncate>{summary}</Text>
         <Flex gap={"2"} align={"center"}>
           <Badge color="gray">
-            Last updated on {published_at ? published_at.toString() : null}
+            Last updated on{" "}
+            {updated_at
+              ? new Date(updated_at).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })
+              : null}
           </Badge>
         </Flex>
       </Flex>

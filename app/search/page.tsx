@@ -95,7 +95,7 @@ export default function SearchPage() {
               accesssion={searchResult.accession}
               title={searchResult.title}
               summary={searchResult.summary}
-              published_at={searchResult.updated_at}
+              updated_at={searchResult.updated_at}
             />
           ))
         ) : (
