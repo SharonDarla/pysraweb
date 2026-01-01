@@ -8,7 +8,6 @@ export default function Home() {
     <Flex style={{ height: "100dvh" }} direction="column">
       <Navabar />
       <HomeSearchBar />
-      {/* <Footer /> */}
     </Flex>
   );
 }
