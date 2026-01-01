@@ -41,20 +41,18 @@ const fetchProject = async (
 };
 
 const fetchSimilarProjects = async (
-  title: string,
+  searchText: string,
   currentAccession: string
 ): Promise<SimilarProject[]> => {
   const res = await fetch(
-    `${SERVER_URL}/search-similar?q=${encodeURIComponent(
-      title
-    )}&limit=6&offset=0`
+    `${SERVER_URL}/search?q=${encodeURIComponent(searchText)}&db=sra`
   );
   if (!res.ok) {
     throw new Error("Network error");
   }
   const data = await res.json();
   // Filter out the current project and return top 5
-  return (data as SimilarProject[])
+  return (data.results as SimilarProject[])
     .filter((p) => p.accession !== currentAccession)
     .slice(0, 5);
 };
@@ -76,9 +74,9 @@ export default function ProjectPage() {
   });
 
   const { data: similarProjects, isLoading: isSimilarLoading } = useQuery({
-    queryKey: ["similarProjects", project?.title],
-    queryFn: () => fetchSimilarProjects(project!.title, project!.accession),
-    enabled: !!project?.title,
+    queryKey: ["similarProjects", project?.abstract],
+    queryFn: () => fetchSimilarProjects(project!.abstract, project!.accession),
+    enabled: !!project?.abstract,
   });
   return (
     <>

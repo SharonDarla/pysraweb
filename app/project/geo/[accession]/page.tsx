@@ -1,6 +1,7 @@
 "use client";
 import ProjectSummary from "@/components/project-summary";
 import PublicationCard, { PubMedArticle } from "@/components/publication-card";
+import ResultCard from "@/components/result-card";
 import SearchBar from "@/components/search-bar";
 import { SERVER_URL } from "@/utils/constants";
 import { HomeIcon, InfoCircledIcon } from "@radix-ui/react-icons";
@@ -73,20 +74,18 @@ const fetchProject = async (
 };
 
 const fetchSimilarProjects = async (
-  title: string,
+  searchText: string,
   currentAccession: string
 ): Promise<SimilarProject[]> => {
   const res = await fetch(
-    `${SERVER_URL}/search-similar?q=${encodeURIComponent(
-      title
-    )}&limit=6&offset=0`
+    `${SERVER_URL}/search?q=${encodeURIComponent(searchText)}&db=geo`
   );
   if (!res.ok) {
     throw new Error("Network error");
   }
   const data = await res.json();
   // Filter out the current project and return top 5
-  return (data as SimilarProject[])
+  return (data.results as SimilarProject[])
     .filter((p) => p.accession !== currentAccession)
     .slice(0, 5);
 };
@@ -108,9 +107,10 @@ export default function GeoProjectPage() {
   });
 
   const { data: similarProjects, isLoading: isSimilarLoading } = useQuery({
-    queryKey: ["similarProjects", project?.title],
-    queryFn: () => fetchSimilarProjects(project!.title, project!.accession),
-    enabled: !!project?.title,
+    queryKey: ["similarProjects", project?.overall_design],
+    queryFn: () =>
+      fetchSimilarProjects(project!.overall_design, project!.accession),
+    enabled: !!project?.overall_design,
   });
 
   const { data: publications, isLoading: isPublicationsLoading } = useQuery({
@@ -253,7 +253,7 @@ export default function GeoProjectPage() {
                   No linked publications found
                 </Text>
               )}
-            {/* <Flex align="center" gap="2">
+            <Flex align="center" gap="2">
               <Text weight="medium" size="6">
                 Similar projects
               </Text>
@@ -281,7 +281,7 @@ export default function GeoProjectPage() {
               <Text size="2" color="gray">
                 No similar projects found
               </Text>
-            )} */}
+            )}
           </Flex>
         </>
       )}
