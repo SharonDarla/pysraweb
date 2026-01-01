@@ -1,39 +1,45 @@
-import { Experiment } from "@/utils/types";
-import { Badge, Card, Flex, Separator, Text } from "@radix-ui/themes";
+import { Badge, Card, Flex, Text } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 
 type ResultCardProps = {
-  experiments: Experiment[];
-  studyAcc: string;
+  accesssion: string;
+  title: string | null;
+  summary: string | null;
+  published_at: Date | null;
 };
 
-export default function ResultCard({ studyAcc, experiments }: ResultCardProps) {
+export default function ResultCard({
+  accesssion,
+  title,
+  summary,
+  published_at,
+}: ResultCardProps) {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/project?srp=${studyAcc}`);
+    router.push(`/project?srp=${accesssion}`);
   };
-  const experimentTitle = experiments[0].study_study_title;
-  const numExperiments = experiments.length;
+  // const numExperiments = experiments.length;
 
   return (
-    <Card variant="surface" style={{ width: "85%" }}>
+    <Card>
       <Flex direction={"column"} gap={"2"}>
-        <Flex justify={"between"} align={"center"}>
+        <Flex justify={"between"} align={"start"} gap={"2"}>
           <Text
-            size={"5"}
-            weight={"medium"}
+            size={"3"}
+            weight={"bold"}
             style={{ cursor: "pointer", width: "100%" }}
             onClick={handleClick}
           >
-            {experimentTitle}
+            {title}
           </Text>
-          <Badge size={"2"}>{studyAcc}</Badge>
+          <Badge size={"2"}>{accesssion}</Badge>
         </Flex>
+        <Text truncate>{summary}</Text>
         <Flex gap={"2"} align={"center"}>
-          <Badge color="gray">20th October, 2020</Badge>
-          <Separator orientation={"vertical"} />
-          <Text>{numExperiments} Experiments</Text>
+          <Badge color="gray">
+            Last updated on {published_at ? published_at.toString() : null}
+          </Badge>
         </Flex>
       </Flex>
     </Card>

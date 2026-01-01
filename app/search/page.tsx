@@ -89,11 +89,13 @@ export default function SearchPage() {
             </Text>
           </Flex>
         ) : searchResults ? (
-          Object.entries(searchResults).flatMap(([studyAcc, results]) => (
+          searchResults.map((searchResult) => (
             <ResultCard
-              key={studyAcc}
-              studyAcc={studyAcc}
-              experiments={results}
+              key={searchResult.accession}
+              accesssion={searchResult.accession}
+              title={searchResult.title}
+              summary={searchResult.summary}
+              published_at={searchResult.updated_at}
             />
           ))
         ) : (

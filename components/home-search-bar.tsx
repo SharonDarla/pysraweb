@@ -102,19 +102,19 @@ export default function HomeSearchBar() {
                   {!hideFilters && (
                     <>
                       <label>Phenotype</label>
-                      <TextField.Root placeholder="homo sapiens" />
+                      <TextField.Root placeholder="" />
 
                       <label>Disease Stage</label>
-                      <TextField.Root placeholder="Diabetes" />
+                      <TextField.Root placeholder="" />
 
                       <label>Strain</label>
-                      <TextField.Root placeholder="homo sapiens" />
+                      <TextField.Root placeholder="" />
 
                       <label>Treatment</label>
-                      <TextField.Root placeholder="Diabetes" />
+                      <TextField.Root placeholder="" />
 
                       <label>Ethnicity</label>
-                      <TextField.Root placeholder="Asian" />
+                      <TextField.Root placeholder="asian" />
 
                       <label>Sex</label>
                       <Select.Root defaultValue="both">
