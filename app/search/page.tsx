@@ -3,27 +3,32 @@ import ResultCard from "@/components/result-card";
 import SearchBar from "@/components/search-bar";
 import { SERVER_URL } from "@/utils/constants";
 import { SearchResults } from "@/utils/types";
-import { ArchiveIcon, CaretSortIcon, ClockIcon } from "@radix-ui/react-icons";
+import { CaretSortIcon, ClockIcon } from "@radix-ui/react-icons";
 import {
   Button,
   Flex,
   RadioGroup,
+  Select,
   Separator,
   Skeleton,
   Text,
 } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const getSearchResults = async (
-  query: string | null
+  query: string | null,
+  db: string | null
 ): Promise<SearchResults | null> => {
   if (!query) return null;
 
-  const res = await fetch(
-    `${SERVER_URL}/search?q=${encodeURIComponent(query)}`
-  );
+  let url = `${SERVER_URL}/search?q=${encodeURIComponent(query)}`;
+  if (db === "sra" || db === "geo") {
+    url += `&db=${encodeURIComponent(db)}`;
+  }
+
+  const res = await fetch(url);
   if (!res.ok) {
     throw new Error("Network Error");
   }
@@ -32,15 +37,22 @@ const getSearchResults = async (
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const query = searchParams.get("q");
+
+  const db = searchParams.get("db");
 
   const {
     data: searchResults,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["search", query],
-    queryFn: ({ queryKey }) => getSearchResults(queryKey[1] as string | null),
+    queryKey: ["search", query, db],
+    queryFn: ({ queryKey }) =>
+      getSearchResults(
+        queryKey[1] as string | null,
+        queryKey[2] as string | null
+      ),
     enabled: !!query,
   });
 
@@ -55,7 +67,6 @@ export default function SearchPage() {
         p={"4"}
         justify={"start"}
         direction={{ initial: "column", md: "row" }}
-        // mr={{ md: "16rem" }}
       >
         {/* Filters for small screens */}
         <Flex
@@ -70,9 +81,29 @@ export default function SearchPage() {
           <Button variant="surface" size={"1"}>
             <ClockIcon /> Any time
           </Button>
-          <Button variant="surface" size={"1"}>
-            <ArchiveIcon /> From GEO & SRA
-          </Button>
+
+          <Select.Root
+            defaultValue={db ? db : "both"}
+            onValueChange={(value) => {
+              if (query) {
+                let url = `/search?q=${encodeURIComponent(query)}`;
+                if (value === "sra" || value === "geo") {
+                  url += `&db=${encodeURIComponent(value)}`;
+                }
+                router.push(url);
+              }
+            }}
+            size={"1"}
+          >
+            <Select.Trigger />
+            <Select.Content>
+              <Select.Group>
+                <Select.Item value="geo">From GEO</Select.Item>
+                <Select.Item value="sra">From SRA</Select.Item>
+                <Select.Item value="both">From GEO & SRA</Select.Item>
+              </Select.Group>
+            </Select.Content>
+          </Select.Root>
         </Flex>
         {/* Filters for md+ screens*/}
         <Flex
@@ -83,10 +114,22 @@ export default function SearchPage() {
           style={{ top: "7rem" }}
           height={"fit-content"}
         >
-          <RadioGroup.Root defaultValue="1" name="database">
-            <RadioGroup.Item value="3">From GEO</RadioGroup.Item>
-            <RadioGroup.Item value="2">From SRA</RadioGroup.Item>
-            <RadioGroup.Item value="1">From GEO & SRA</RadioGroup.Item>
+          <RadioGroup.Root
+            defaultValue={db ? db : "both"}
+            name="dataset"
+            onValueChange={(value) => {
+              if (query) {
+                let url = `/search?q=${encodeURIComponent(query)}`;
+                if (value === "sra" || value === "geo") {
+                  url += `&db=${encodeURIComponent(value)}`;
+                }
+                router.push(url);
+              }
+            }}
+          >
+            <RadioGroup.Item value="geo">From GEO</RadioGroup.Item>
+            <RadioGroup.Item value="sra">From SRA</RadioGroup.Item>
+            <RadioGroup.Item value="both">From GEO & SRA</RadioGroup.Item>
           </RadioGroup.Root>
 
           <Separator orientation={"horizontal"} size={"4"} />
@@ -121,7 +164,7 @@ export default function SearchPage() {
             <Flex
               gap="3"
               align="start"
-              style={{ width: "65%" }}
+              maxWidth={{ initial: "100%", md: "70%" }}
               justify="start"
               direction={"column"}
             >
