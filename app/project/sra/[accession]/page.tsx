@@ -6,7 +6,7 @@ import { HomeIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { Badge, Button, Flex, Spinner, Text } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 type Project = {
@@ -62,8 +62,8 @@ const fetchSimilarProjects = async (
 const ABSTRACT_CHAR_LIMIT = 350;
 
 export default function ProjectPage() {
-  const searchParams = useSearchParams();
-  const accession = searchParams.get("srp");
+  const params = useParams();
+  const accession = params.accession as string | undefined;
   const [isAbstractExpanded, setIsAbstractExpanded] = useState(false);
   const {
     data: project,
@@ -71,7 +71,7 @@ export default function ProjectPage() {
     isError,
   } = useQuery({
     queryKey: ["project", accession],
-    queryFn: () => fetchProject(accession),
+    queryFn: () => fetchProject(accession ?? null),
     enabled: !!accession,
   });
 
