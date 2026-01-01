@@ -25,6 +25,8 @@ export default function SearchBar({
         top: 0,
         zIndex: 50,
         boxShadow: "0 1px 0 rgba(0,0,0,0.06)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
         backgroundColor: "transparent",
       }}
     >
@@ -68,8 +70,8 @@ export default function SearchBar({
         display={{ initial: "none", md: "flex" }}
       >
         {/* <RadixLink href="https://saket-choudhary.me/pysradb/index.html">
-          Docs
-        </RadixLink> */}
+        Docs
+      </RadixLink> */}
         <ThemeToggle />
         {/* <RadixLink href="https://saketlab.in/">Saket Lab</RadixLink> */}
         <GitHubButton />
