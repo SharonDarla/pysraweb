@@ -18,7 +18,7 @@ export default function ResultCard({
 
   const handleClick = () => {
     if (accesssion.startsWith("S")) router.push(`/project/sra/${accesssion}`);
-    else router.push(`/project?gse=${accesssion}`);
+    else router.push(`/project/geo/${accesssion}`);
   };
   // const numExperiments = experiments.length;
 
