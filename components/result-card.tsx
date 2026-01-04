@@ -36,7 +36,12 @@ export default function ResultCard({
           {summary}
         </Text>
         <Flex gap={"2"} align={"center"}>
-          <Badge size={"2"}>{accesssion}</Badge>
+          <Badge
+            size={"2"}
+            color={accesssion.startsWith("S") ? "brown" : undefined}
+          >
+            {accesssion}
+          </Badge>
           <Badge color="gray">
             Last updated on{" "}
             {updated_at
