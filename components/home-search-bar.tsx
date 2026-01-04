@@ -44,7 +44,7 @@ export default function HomeSearchBar() {
         />
       </Box>
       <Text weight={"medium"} color="gray" size={{ initial: "1", md: "3" }}>
-        Discover GEO & SRA datasets with natural language
+        Discover GEO & SRA datasets
       </Text>
       <Box width={{ initial: "85%", md: "60%" }}>
         <Flex direction={"column"} gap={"4"}>
