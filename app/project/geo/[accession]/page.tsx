@@ -4,7 +4,11 @@ import PublicationCard, { PubMedArticle } from "@/components/publication-card";
 import ResultCard from "@/components/result-card";
 import SearchBar from "@/components/search-bar";
 import { SERVER_URL } from "@/utils/constants";
-import { HomeIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import {
+  ExternalLinkIcon,
+  HomeIcon,
+  InfoCircledIcon,
+} from "@radix-ui/react-icons";
 import { Badge, Button, Flex, Spinner, Text } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
@@ -206,6 +210,33 @@ export default function GeoProjectPage() {
                   20 Samples
                 </Badge>
               )}
+              {project.relation &&
+                (() => {
+                  const relations = project.relation as unknown as {
+                    "@target": string;
+                    "@type": string;
+                  }[];
+                  const bioProject = relations.find(
+                    (r) => r["@type"] === "BioProject"
+                  );
+                  if (!bioProject) return null;
+                  return (
+                    <a
+                      href={bioProject["@target"]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Badge
+                        size={{ initial: "1", md: "3" }}
+                        color="green"
+                        style={{ cursor: "pointer" }}
+                      >
+                        {bioProject["@target"].split("/").pop()}
+                        <ExternalLinkIcon />
+                      </Badge>
+                    </a>
+                  );
+                })()}
             </Flex>
             <Flex align={"center"} gap={"2"}>
               <InfoCircledIcon />
