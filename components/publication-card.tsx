@@ -1,5 +1,5 @@
 import { ExternalLinkIcon } from "@radix-ui/react-icons";
-import { Card, Flex, Link, Text } from "@radix-ui/themes";
+import { Box, Card, Flex, Link, Text } from "@radix-ui/themes";
 import Image from "next/image";
 
 type PubMedAuthor = {
@@ -33,8 +33,13 @@ export default function PublicationCard({ publication }: PublicationCardProps) {
 
   return (
     <Card>
-      <Flex gap={"4"} align={"start"}>
-        <Image src={"/page.svg"} height={40} width={40} alt="page icon" />
+      <Flex gap={"4"} align={"center"}>
+        <Box display={{ initial: "block", md: "none" }}>
+          <Image src={"/page.svg"} height={24} width={24} alt="page icon" />
+        </Box>
+        <Box display={{ initial: "none", md: "block" }}>
+          <Image src={"/page.svg"} height={40} width={40} alt="page icon" />
+        </Box>
         <Flex direction={"column"}>
           <Link
             href={`https://doi.org/${doi}`}
