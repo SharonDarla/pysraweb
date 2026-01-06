@@ -258,7 +258,7 @@ export default function ProjectPage() {
                 {project.title}
               </Text>
             </Flex>
-            <Flex align="start" gap="2">
+            <Flex justify="start" align={"center"} gap="2" wrap={"wrap"}>
               <Badge size={{ initial: "1", md: "3" }} color="brown">
                 {accession}
               </Badge>
