@@ -304,7 +304,7 @@ export default function GeoProjectPage() {
                 {project.title}
               </Text>
             </Flex>
-            <Flex align="start" gap="2" wrap="wrap">
+            <Flex justify={"start"} align="center" gap="2" wrap="wrap">
               <Badge size={{ initial: "1", md: "3" }}>{accession}</Badge>
               {samples && samples.length > 0 && (
                 <Badge size={{ initial: "1", md: "3" }} color="gray">
