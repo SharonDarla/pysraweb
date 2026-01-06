@@ -1,3 +1,4 @@
+"use client";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { SegmentedControl } from "@radix-ui/themes";
 import { useTheme } from "next-themes";

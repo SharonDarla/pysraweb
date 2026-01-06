@@ -1,4 +1,3 @@
-"use client";
 import HomeSearchBar from "@/components/home-search-bar";
 import Navabar from "@/components/navbar";
 import { Flex } from "@radix-ui/themes";

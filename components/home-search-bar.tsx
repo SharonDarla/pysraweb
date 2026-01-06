@@ -1,26 +1,8 @@
-"use client";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Box, Flex, Text, TextField } from "@radix-ui/themes";
+import { Box, Flex, Text } from "@radix-ui/themes";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-
-enum searchType {
-  NLPSearch,
-  FilterSearch,
-}
+import HeroSearchBar from "./hero-search-bar";
 
 export default function HomeSearchBar() {
-  const [query, setQuery] = useState("");
-  const router = useRouter();
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-
-    if (!query.trim()) return;
-
-    router.push(`/search?q=${encodeURIComponent(query)}`);
-  };
   return (
     <Flex
       justify="center"
@@ -32,6 +14,7 @@ export default function HomeSearchBar() {
       <Box width={"12rem"}>
         <Image
           src="/pysradb_v3.png"
+          loading="eager"
           alt="pysradb logo"
           width={526}
           height={233}
@@ -40,27 +23,13 @@ export default function HomeSearchBar() {
             height: "auto",
             backgroundColor: "transparent",
           }}
-          unoptimized
+          unoptimized // necessary for transparency
         />
       </Box>
       <Text weight={"medium"} color="gray" size={{ initial: "1", md: "3" }}>
         Discover GEO & SRA datasets
       </Text>
-      <Box width={{ initial: "85%", md: "60%" }}>
-        <Flex direction={"column"} gap={"4"}>
-          <form onSubmit={handleSubmit}>
-            <TextField.Root
-              size="3"
-              onChange={(e) => setQuery(e.target.value)}
-              autoFocus
-            >
-              <TextField.Slot>
-                <MagnifyingGlassIcon height="16" width="16" />
-              </TextField.Slot>
-            </TextField.Root>
-          </form>
-        </Flex>
-      </Box>
+      <HeroSearchBar />
     </Flex>
   );
 }
