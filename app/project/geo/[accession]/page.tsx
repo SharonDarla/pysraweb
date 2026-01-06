@@ -547,7 +547,13 @@ export default function GeoProjectPage() {
                             </Table.Cell>
                             <Table.Cell>{sample.sample_type ?? "-"}</Table.Cell>
                             <Table.Cell>
-                              {sample.platform_ref ?? "-"}
+                              <Link
+                                href={`https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=${sample.platform_ref}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {sample.platform_ref ?? "-"}
+                              </Link>
                             </Table.Cell>
                             <Table.Cell>-</Table.Cell>
                             <Table.Cell>-</Table.Cell>
@@ -601,7 +607,13 @@ export default function GeoProjectPage() {
                             </Table.Cell>
                             <Table.Cell>{sample.sample_type ?? "-"}</Table.Cell>
                             <Table.Cell>
-                              {sample.platform_ref ?? "-"}
+                              <Link
+                                href={`https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=${sample.platform_ref}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {sample.platform_ref ?? "-"}
+                              </Link>
                             </Table.Cell>
                             <Table.Cell>
                               {channel["@position"] ?? channelIdx + 1}
