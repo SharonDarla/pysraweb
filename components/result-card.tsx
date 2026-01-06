@@ -27,7 +27,7 @@ export default function ResultCard({
         <Text
           size={{ initial: "2", md: "3" }}
           weight={"bold"}
-          style={{ cursor: "pointer", width: "100%" }}
+          style={{ cursor: "pointer", width: "100%", userSelect: "none" }}
           onClick={handleClick}
         >
           {title}

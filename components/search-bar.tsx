@@ -16,9 +16,9 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
 
   return (
     <Flex
-      justify={{ initial: "center", sm: "between" }}
+      justify={{ initial: "center", md: "between" }}
       align="center"
-      p={{ initial: "0", sm: "3" }}
+      p={{ initial: "0", md: "3" }}
       pb={"3"}
       gap={"4"}
       style={{
@@ -38,23 +38,25 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
         direction={{ initial: "column", md: "row" }}
         pt={"2"}
       >
-        <Link href={"/"} style={{ width: "11rem" }}>
-          <Image
-            src="/pysradb_v3.png"
-            alt="pysradb logo"
-            placeholder="empty"
-            draggable={"false"}
-            width={116}
-            height={50}
-            style={{
-              width: "80%",
-              height: "auto",
-              backgroundColor: "transparent",
-            }}
-            unoptimized
-          />
-        </Link>
-        <Box width={{ initial: "85%", md: "70%" }}>
+        <Box width={{ initial: "6rem", md: "11rem" }}>
+          <Link href={"/"}>
+            <Image
+              src="/pysradb_v3.png"
+              alt="pysradb logo"
+              placeholder="empty"
+              draggable={"false"}
+              width={116}
+              height={50}
+              style={{
+                width: "100%",
+                height: "auto",
+                backgroundColor: "transparent",
+              }}
+              unoptimized
+            />
+          </Link>
+        </Box>
+        <Box width={{ initial: "90%", md: "70%" }}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
