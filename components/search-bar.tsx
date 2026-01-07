@@ -51,6 +51,7 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
                 width: "100%",
                 height: "auto",
                 backgroundColor: "transparent",
+                scale: 0.8,
               }}
               unoptimized
             />
