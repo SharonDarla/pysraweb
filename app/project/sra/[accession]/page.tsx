@@ -105,11 +105,21 @@ const fetchExperiments = async (
   const data = await res.json();
   return data as Experiment[];
 };
-
 const fetchSample = async (accession: string): Promise<Sample | null> => {
   const res = await fetch(`${SERVER_URL}/sample/${accession}`);
   if (!res.ok) return null;
-  return res.json();
+
+  const s = (await res.json()) as Sample | { attributes_json: unknown };
+
+  if (typeof s.attributes_json === "string") {
+    try {
+      s.attributes_json = JSON.parse(s.attributes_json);
+    } catch {
+      s.attributes_json = null;
+    }
+  }
+
+  return s as Sample;
 };
 
 const fetchSamplesForExperiments = async (
@@ -164,11 +174,13 @@ export default function ProjectPage() {
   const attributeKeys = React.useMemo(() => {
     if (!samplesMap) return [];
     const keys = new Set<string>();
-    samplesMap.forEach((sample) => {
-      if (sample.attributes_json) {
-        Object.keys(sample.attributes_json).forEach((k) => keys.add(k));
+
+    samplesMap.forEach((s) => {
+      if (s.attributes_json) {
+        Object.keys(s.attributes_json).forEach((k) => keys.add(k));
       }
     });
+
     return Array.from(keys);
   }, [samplesMap]);
 
