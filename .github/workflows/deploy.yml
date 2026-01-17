@@ -57,8 +57,9 @@ jobs:
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           port: 22
           script: |
+            export PATH="/home/sramap/.nvm/versions/node/v24.13.0/bin:$PATH"
             cd /var/www/sramap/frontend
             npm ci --production
             sudo systemctl restart sramap-frontend
             sleep 3
-            curl -f http://localhost:3000 || echo "Health check pending..."
+            curl -f http://localhost:3002 || echo "Health check pending..."
