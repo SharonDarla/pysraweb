@@ -520,15 +520,32 @@ export default function ProjectPage() {
                             <Table.Cell>{e.library_layout ?? "-"}</Table.Cell>
                             <Table.Cell>{e.platform ?? "-"}</Table.Cell>
                             <Table.Cell>{e.instrument_model ?? "-"}</Table.Cell>
-                            <Table.Cell>{sampleAcc ?? "-"}</Table.Cell>
                             <Table.Cell>
-                              <Link
-                                href={`https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=${sample?.alias}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {sample?.alias ?? "-"}
-                              </Link>
+                              {sampleAcc && sampleAcc.startsWith("SRS") ? (
+                                <Link
+                                  href={`https://www.ncbi.nlm.nih.gov/sra/${sampleAcc}[accn]`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {sampleAcc}
+                                </Link>
+                              ) : (
+                                <span>{sampleAcc ?? "-"}</span>
+                              )}
+                            </Table.Cell>
+                            <Table.Cell>
+                              {sample?.alias &&
+                              sample.alias.startsWith("GSM") ? (
+                                <Link
+                                  href={`https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=${sample.alias}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {sample.alias}
+                                </Link>
+                              ) : (
+                                <span>{sample?.alias ?? "-"}</span>
+                              )}
                             </Table.Cell>
                             <Table.Cell>{sample?.title ?? "-"}</Table.Cell>
                             <Table.Cell>
