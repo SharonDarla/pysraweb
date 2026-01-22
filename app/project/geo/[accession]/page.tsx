@@ -539,8 +539,6 @@ export default function GeoProjectPage() {
               style={{
                 width: "100%",
                 maxHeight: "500px",
-                overflowX: "auto",
-                overflowY: "auto",
               }}
             >
               {isSamplesLoading && (
@@ -556,7 +554,12 @@ export default function GeoProjectPage() {
               )}
               {!isSamplesLoading && samples && samples.length > 0 && (
                 <Table.Root
-                  style={{ width: "100%", tableLayout: "fixed" }}
+                  style={{
+                    width: "100%",
+                    tableLayout: "fixed",
+                    overflowX: "auto",
+                    overflowY: "auto",
+                  }}
                   variant="surface"
                   size={"1"}
                 >
