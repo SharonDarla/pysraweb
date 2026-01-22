@@ -7,26 +7,23 @@ on:
       - master
 
 jobs:
-  build_and_deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js (for lint/build checks only)
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "npm"
 
-      - name: Install dependencies
+      - name: Install dependencies (CI sanity check)
         run: npm ci
 
-      - name: Build Next.js
-        run: npm run build
-
-      - name: Prepare deployment directory
+      - name: Prepare server directory
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
@@ -37,7 +34,7 @@ jobs:
             mkdir -p /var/www/sramap/frontend
             rm -rf /var/www/sramap/frontend/*
 
-      - name: Deploy build artifacts
+      - name: Upload source files
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
@@ -45,13 +42,14 @@ jobs:
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           port: 22
           source: |
-            .next
             public
+            src
             package.json
             package-lock.json
+            tsconfig.json
           target: /var/www/sramap/frontend
 
-      - name: Install dependencies and restart services
+      - name: Build and restart on server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
@@ -61,8 +59,12 @@ jobs:
           script: |
             export PATH="/home/sramap/.nvm/versions/node/v24.13.0/bin:$PATH"
             cd /var/www/sramap/frontend
+
             npm ci
+            npm run build
+
             sudo systemctl restart sramap-frontend
-            sudo systemctl restart sramap-backend
             sudo systemctl is-active --quiet sramap-frontend
-            curl -f http://localhost:3002 || echo "Health check pending..."
+
+            sleep 2
+            curl -f http://localhost:3002
