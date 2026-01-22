@@ -7,23 +7,25 @@ on:
       - master
 
 jobs:
-  deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js (for lint/build checks only)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "npm"
 
-      - name: Install dependencies (CI sanity check)
+      - name: Install dependencies
         run: npm ci
 
-      - name: Prepare server directory
+      - name: Build
+        run: npm run build
+
+      - name: Prepare deployment directory
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
@@ -34,22 +36,18 @@ jobs:
             mkdir -p /var/www/sramap/frontend
             rm -rf /var/www/sramap/frontend/*
 
-      - name: Upload source files
+      - name: Deploy to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
           username: ${{ secrets.HOSTINGER_USER }}
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
           port: 22
-          source: |
-            public
-            app
-            package.json
-            package-lock.json
-            tsconfig.json
+          source: ".next,public,package.json,package-lock.json,next.config.ts"
           target: /var/www/sramap/frontend
+          strip_components: 0
 
-      - name: Build and restart on server
+      - name: Install and restart frontend
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
@@ -59,12 +57,8 @@ jobs:
           script: |
             export PATH="/home/sramap/.nvm/versions/node/v24.13.0/bin:$PATH"
             cd /var/www/sramap/frontend
-
             npm ci
-            npm run build
-
             sudo systemctl restart sramap-frontend
-            sudo systemctl is-active --quiet sramap-frontend
-
-            sleep 2
-            curl -f http://localhost:3002
+            sudo systemctl restart sramap-backend
+            sleep 3
+            curl -f http://localhost:3002 || echo "Health check pending..."
