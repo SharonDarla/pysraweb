@@ -434,7 +434,7 @@ export default function GeoProjectPage() {
             <Text>{project.overall_design}</Text>
 
             {/* Samples table */}
-            <Flex justify={"between"}>
+            <Flex justify={"between"} align={"center"}>
               <Text weight="medium" size="6">
                 Samples
               </Text>
