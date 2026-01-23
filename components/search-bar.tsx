@@ -22,11 +22,12 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
       style={{
         position: "sticky",
         top: 0,
+        width: "100%",
         zIndex: 50,
         boxShadow: "0 1px 0 rgba(0,0,0,0.06)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-        backgroundColor: "transparent",
+        // backdropFilter: "blur(10px)",
+        // WebkitBackdropFilter: "blur(10px)",
+        backgroundColor: "inherit",
       }}
     >
       <Flex
@@ -36,44 +37,11 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
         direction={{ initial: "column", md: "row" }}
         pt={"2"}
       >
-        {/* <Box width={{ initial: "6rem", md: "11rem" }}>
-          <Link href={"/"}>
-            <Image
-              src="/pysradb_v3.png"
-              alt="pysradb logo"
-              placeholder="empty"
-              draggable={"false"}
-              width={116}
-              height={50}
-              style={{
-                width: "100%",
-                height: "auto",
-                backgroundColor: "transparent",
-                scale: 0.8,
-              }}
-              unoptimized
-            />
-          </Link>
-        </Box> */}
         <Link href="/" style={{ textDecoration: "none" }}>
           <Box width={{ initial: "6rem", md: "11rem" }}>
-            {/* <Image
-          src="/pysradb_v3.png"
-          draggable={"false"}
-          loading="eager"
-          alt="pysradb logo"
-          width={526}
-          height={233}
-          style={{
-            width: "100%",
-            height: "auto",
-            backgroundColor: "transparent",
-          }}
-          unoptimized // necessary for transparency
-        /> */}
             <Text
               color="gray"
-              size={{ initial: "8", md: "8" }}
+              size={{ initial: "5", md: "8" }}
               weight={"bold"}
               style={{ fontFamily: "monospace" }}
               align={"center"}
