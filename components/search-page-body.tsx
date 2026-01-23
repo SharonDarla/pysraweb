@@ -25,13 +25,15 @@ type Cursor = {
 
 type SearchResponse = {
   results: SearchResult[];
+  total: number;
+  took_ms: number;
   next_cursor: Cursor;
 };
 
 const getSearchResults = async (
   query: string | null,
   db: string | null,
-  cursor: Cursor
+  cursor: Cursor,
 ): Promise<SearchResponse | null> => {
   if (!query) return null;
 
@@ -41,7 +43,7 @@ const getSearchResults = async (
   }
   if (cursor) {
     url += `&cursor_rank=${cursor.rank}&cursor_acc=${encodeURIComponent(
-      cursor.accession
+      cursor.accession,
     )}`;
   }
 
@@ -60,7 +62,7 @@ export default function SearchPageBody() {
   const db = searchParams.get("db");
   const [sortBy, setSortBy] = useState<"relevance" | "date">("relevance");
   const [timeFilter, setTimeFilter] = useState<"any" | "1" | "5" | "10" | "20">(
-    "any"
+    "any",
   );
 
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -81,6 +83,10 @@ export default function SearchPageBody() {
     enabled: !!query,
   });
 
+  const total = data?.pages?.[0]?.total ?? 0;
+
+  const tookMs = data?.pages?.[0]?.took_ms ?? 0;
+
   // Flatten all pages into a single array of results
   const searchResults =
     data?.pages.flatMap((page) => page?.results ?? []) ?? [];
@@ -93,7 +99,7 @@ export default function SearchPageBody() {
           fetchNextPage();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const currentRef = loadMoreRef.current;
@@ -276,11 +282,14 @@ export default function SearchPageBody() {
             </Flex>
           ) : searchResults.length > 0 ? (
             <>
+              <Text color="gray" weight={"light"}>
+                Fetched {total} results in {(tookMs / 1000).toFixed(2)} seconds
+              </Text>
               {(sortBy === "date"
                 ? [...searchResults].sort(
                     (a, b) =>
                       new Date(b.updated_at).getTime() -
-                      new Date(a.updated_at).getTime()
+                      new Date(a.updated_at).getTime(),
                   )
                 : searchResults
               )
