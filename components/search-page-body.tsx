@@ -320,7 +320,8 @@ export default function SearchPageBody() {
           ) : searchResults.length > 0 ? (
             <>
               <Text color="gray" weight={"light"}>
-                Fetched {total} results in {(tookMs / 1000).toFixed(2)} seconds
+                Fetched {total} result{total == 1 ? "" : "s"} in{" "}
+                {(tookMs / 1000).toFixed(2)} seconds
               </Text>
               {(sortBy === "date"
                 ? [...searchResults].sort(
