@@ -1,4 +1,5 @@
 import { Box, Flex, Link } from "@radix-ui/themes";
+import BulkMetaDialog from "./bulk-meta-dialog";
 import GitHubButton from "./github-button";
 import ThemeToggle from "./theme-toggle";
 
@@ -19,6 +20,7 @@ export default function Navabar() {
         <Link target="_blank" href="mailto:saketc@iitb.ac.in">
           Contact
         </Link>
+        <BulkMetaDialog />
       </Flex>
       <Flex
         display={{ initial: "none", sm: "flex" }}
