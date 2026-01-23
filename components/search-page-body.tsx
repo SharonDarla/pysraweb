@@ -12,6 +12,7 @@ import {
   Skeleton,
   Spinner,
   Text,
+  TextField,
 } from "@radix-ui/themes";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import Image from "next/image";
@@ -61,9 +62,13 @@ export default function SearchPageBody() {
 
   const db = searchParams.get("db");
   const [sortBy, setSortBy] = useState<"relevance" | "date">("relevance");
-  const [timeFilter, setTimeFilter] = useState<"any" | "1" | "5" | "10" | "20">(
-    "any",
-  );
+  const [timeFilter, setTimeFilter] = useState<
+    "any" | "1" | "5" | "10" | "20" | "custom"
+  >("any");
+  const [customYearRange, setCustomYearRange] = useState<{
+    from: string;
+    to: string;
+  }>({ from: "", to: "" });
 
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
@@ -237,7 +242,7 @@ export default function SearchPageBody() {
             defaultValue="any"
             name="time"
             onValueChange={(value) =>
-              setTimeFilter(value as "any" | "1" | "5" | "10" | "20")
+              setTimeFilter(value as "any" | "1" | "5" | "10" | "20" | "custom")
             }
           >
             <RadioGroup.Item value="any">Any time</RadioGroup.Item>
@@ -245,7 +250,39 @@ export default function SearchPageBody() {
             <RadioGroup.Item value="5">Since last 5 years</RadioGroup.Item>
             <RadioGroup.Item value="10">Since last 10 years</RadioGroup.Item>
             <RadioGroup.Item value="20">Since last 20 years</RadioGroup.Item>
+            <RadioGroup.Item value="custom">Custom range</RadioGroup.Item>
           </RadioGroup.Root>
+          {timeFilter === "custom" && (
+            <Flex gap="2" align="center">
+              <TextField.Root
+                type="number"
+                min="2000"
+                max={new Date().getFullYear()}
+                value={customYearRange.from}
+                onChange={(e) =>
+                  setCustomYearRange((r) => ({ ...r, from: e.target.value }))
+                }
+                placeholder="YYYY"
+                variant="surface"
+                size={"2"}
+                style={{ width: "3.5rem" }}
+              />
+              <Text size="2">to</Text>
+              <TextField.Root
+                type="number"
+                min="2000"
+                max={new Date().getFullYear()}
+                value={customYearRange.to}
+                onChange={(e) =>
+                  setCustomYearRange((r) => ({ ...r, to: e.target.value }))
+                }
+                placeholder="YYYY"
+                variant="surface"
+                style={{ width: "3.5rem" }}
+                size={"2"}
+              />
+            </Flex>
+          )}
         </Flex>
 
         <Flex gap="4" direction="column" width={{ initial: "100%", md: "70%" }}>
@@ -295,6 +332,13 @@ export default function SearchPageBody() {
               )
                 .filter((result) => {
                   if (timeFilter === "any") return true;
+                  if (timeFilter === "custom") {
+                    const from = parseInt(customYearRange.from);
+                    const to = parseInt(customYearRange.to);
+                    if (!from || !to) return true;
+                    const d = new Date(result.updated_at);
+                    return d.getFullYear() >= from && d.getFullYear() <= to;
+                  }
                   const years = parseInt(timeFilter);
                   const cutoffDate = new Date();
                   cutoffDate.setFullYear(cutoffDate.getFullYear() - years);
