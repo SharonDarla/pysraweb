@@ -2,7 +2,14 @@
 
 import { SERVER_URL } from "@/utils/constants";
 import { DownloadIcon, ViewGridIcon } from "@radix-ui/react-icons";
-import { Button, Dialog, Flex, Spinner, TextArea } from "@radix-ui/themes";
+import {
+  Button,
+  Dialog,
+  Flex,
+  Spinner,
+  Text,
+  TextArea,
+} from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -75,6 +82,15 @@ export default function BulkMetaDialog() {
     setSubmitted(accs);
   };
 
+  const accLines = input
+    .split("\n")
+    .map((x) => x.trim())
+    .filter(Boolean);
+
+  const hasInvalidAccessions =
+    accLines.length > 0 &&
+    accLines.some((a) => !/^(GSM|SRP|ERP|DRP|PRJNA)\d+/i.test(a));
+
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger>
@@ -103,25 +119,37 @@ export default function BulkMetaDialog() {
             }}
           />
         </Flex>
+        <Flex mt="4" justify={"between"} align={"center"}>
+          {hasInvalidAccessions ? (
+            <Text size={"2"} color="red">
+              Invalid study or series accessions!
+            </Text>
+          ) : (
+            <div />
+          )}
 
-        <Flex gap="3" mt="4" justify="end">
-          <Dialog.Close>
-            <Button variant="soft" color="gray" disabled={isFetching}>
-              Cancel
+          <Flex gap="3" justify="end" align={"center"}>
+            <Dialog.Close>
+              <Button variant="soft" color="gray" disabled={isFetching}>
+                Cancel
+              </Button>
+            </Dialog.Close>
+
+            <Button
+              onClick={handleDownload}
+              disabled={isFetching || input.length == 0 || hasInvalidAccessions}
+            >
+              {isFetching ? <Spinner /> : <DownloadIcon />}
+              {isFetching ? "Preparing ZIP..." : "Download"}
             </Button>
-          </Dialog.Close>
-
-          <Button onClick={handleDownload} disabled={isFetching}>
-            {isFetching ? <Spinner /> : <DownloadIcon />}
-            {isFetching ? " Preparing ZIP..." : " Get metadata"}
-          </Button>
+          </Flex>
         </Flex>
 
-        {isError && (
-          <Flex mt="2">
-            <span style={{ color: "red" }}>Failed to prepare metadata ZIP</span>
-          </Flex>
-        )}
+        {/* {isError && ( */}
+        {/* <Flex> */}
+        {/* <span style={{ color: "red" }}>Failed to prepare metadata ZIP</span> */}
+        {/* </Flex> */}
+        {/* )} */}
       </Dialog.Content>
     </Dialog.Root>
   );
