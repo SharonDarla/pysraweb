@@ -3,6 +3,7 @@ import ResultCard from "@/components/result-card";
 import SearchBar from "@/components/search-bar";
 import { SERVER_URL } from "@/utils/constants";
 import { SearchResult } from "@/utils/types";
+import { ArrowUpIcon } from "@radix-ui/react-icons";
 import {
   Button,
   Flex,
@@ -13,6 +14,7 @@ import {
   Spinner,
   Text,
   TextField,
+  Tooltip,
 } from "@radix-ui/themes";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import Image from "next/image";
@@ -119,6 +121,16 @@ export default function SearchPageBody() {
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  const [showTopButton, setShowTopButton] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setShowTopButton(window.scrollY > 200);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   return (
     <>
       {/* Navbar and search */}
@@ -395,6 +407,22 @@ export default function SearchPageBody() {
             </Flex>
           )}
         </Flex>
+
+        {showTopButton && (
+          <Flex
+            position="fixed"
+            style={{ right: "2rem", bottom: "1.5rem", zIndex: 999 }}
+          >
+            <Tooltip content="Go to top">
+              <Button
+                variant="classic"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              >
+                <ArrowUpIcon />
+              </Button>
+            </Tooltip>
+          </Flex>
+        )}
       </Flex>
     </>
   );
