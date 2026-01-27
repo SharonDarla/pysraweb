@@ -43,14 +43,14 @@ export const metadata: Metadata = {
     title: "pysraweb - Search GEO & SRA Datasets",
     description:
       "Fast exploration of GEO and SRA sequencing datasets. Search millions of experiments with unified metadata views and relevance-ranked results.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "pysraweb - GEO & SRA Dataset Search",
-      },
-    ],
+    // images: [
+    //   {
+    //     url: "/og-image.png",
+    //     width: 1200,
+    //     height: 630,
+    //     alt: "pysraweb - GEO & SRA Dataset Search",
+    //   },
+    // ],
   },
   twitter: {
     card: "summary_large_image",
