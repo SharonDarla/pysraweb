@@ -1,7 +1,7 @@
 import SearchBar from "@/components/search-bar";
 import { Flex, Link, Text } from "@radix-ui/themes";
-import Image from "next/image";
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "About & FAQ",
@@ -27,7 +27,8 @@ export default function FAQ() {
           About
         </Text>
         <Text>
-          pysraweb is a web app for fast exploration of datasets from the{" "}
+          pysraweb (<i>/paɪ ˌɛs ɑːr eɪ wɛb/</i>) is a web app for fast
+          exploration of datasets from the{" "}
           <Link href="https://www.ncbi.nlm.nih.gov/sra">
             Sequence Read Archive
           </Link>{" "}

@@ -20,7 +20,7 @@ export default function Navabar() {
         <Link target="_blank" href="mailto:saketc@iitb.ac.in">
           Contact
         </Link>
-        <Link href="/faq">FAQ</Link>
+        <Link href="/faq">About</Link>
         <Box display={{ initial: "none", md: "block" }}>
           <BulkMetaDialog />
         </Box>
