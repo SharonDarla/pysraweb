@@ -67,9 +67,15 @@ export default function HeroSearchBar() {
   };
 
   // Filter history based on query - only show if query has text
-  const filteredHistory = query.trim()
+  const trimmedQuery = query.trim();
+  const filteredHistory = trimmedQuery
     ? history
-        .filter((h) => h.toLowerCase().includes(query.trim().toLowerCase()))
+        .filter((h) => {
+          const hLower = h.toLowerCase();
+          const qLower = trimmedQuery.toLowerCase();
+          // include if it contains the query but is not an exact match
+          return hLower.includes(qLower) && hLower !== qLower;
+        })
         .slice(0, MAX_HISTORY)
     : [];
 
@@ -93,7 +99,7 @@ export default function HeroSearchBar() {
         </form>
       </Flex>
       {isFocused && filteredHistory.length > 0 && (
-        <Flex style={{ width: "100%" }}>
+        <Flex style={{ width: "100%" }} mt={"1"}>
           <Card
             ref={dropdownRef}
             style={{ width: "100%" }}

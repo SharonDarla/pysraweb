@@ -81,11 +81,15 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
   };
 
   // Filter history based on query - only show if query has text
-  const filteredHistory = searchQuery.trim()
+  const trimmedQuery = searchQuery.trim();
+  const filteredHistory = trimmedQuery
     ? history
-        .filter((h) =>
-          h.toLowerCase().includes(searchQuery.trim().toLowerCase()),
-        )
+        .filter((h) => {
+          const hLower = h.toLowerCase();
+          const qLower = trimmedQuery.toLowerCase();
+          // include if it contains the query but is not an exact match
+          return hLower.includes(qLower) && hLower !== qLower;
+        })
         .slice(0, MAX_HISTORY)
     : [];
 
