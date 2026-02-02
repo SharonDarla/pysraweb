@@ -1,5 +1,5 @@
 import SearchPageBody from "@/components/search-page-body";
-import { Spinner } from "@radix-ui/themes";
+import SearchPageSkeleton from "@/components/search-page-skeleton";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<SearchPageSkeleton />}>
       <SearchPageBody />
     </Suspense>
   );
