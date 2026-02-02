@@ -5,6 +5,10 @@ import Script from "next/script";
 
 const GA_TRACKING_ID = "G-XF18RH7984";
 
+export const viewport = {
+  themeColor: "#0e1015",
+};
+
 export const metadata: Metadata = {
   title: {
     default: "pysraweb - Search GEO & SRA Datasets",
@@ -33,7 +37,6 @@ export const metadata: Metadata = {
   publisher: "Saket Lab",
   metadataBase: new URL("https://pysraweb.saketlab.org"),
   manifest: "/manifest.webmanifest",
-  themeColor: "#0e1015",
   icons: {
     icon: "/favicon.ico",
     apple: "/favicon.ico",
