@@ -1,69 +1,31 @@
 "use client";
-import {
-  CountdownTimerIcon,
-  Cross1Icon,
-  MagnifyingGlassIcon,
-} from "@radix-ui/react-icons";
-import { Box, Button, Card, Flex, Text, TextField } from "@radix-ui/themes";
+import SearchHistoryDropdown from "@/components/search-history-dropdown";
+import { useSearchHistory } from "@/utils/useSearchHistory";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Box, Flex, TextField } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
-import { FormEvent, useRef, useState } from "react";
-
-const HISTORY_KEY = "searchHistory";
-const MAX_HISTORY = 5;
+import { FormEvent, useState } from "react";
 
 export default function HeroSearchBar() {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [history, setHistory] = useState<string[]>(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem(HISTORY_KEY);
-      if (stored) {
-        try {
-          return JSON.parse(stored);
-        } catch (e) {
-          console.error("Failed to parse search history", e);
-          return [];
-        }
-      }
-    }
-    return [];
-  });
+  const { history, saveHistory, performSearch } = useSearchHistory();
   const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const saveHistory = (newHistory: string[]) => {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory));
-    setHistory(newHistory);
-  };
-
-  const performSearch = (searchQuery: string) => {
-    const trimmed = searchQuery.trim();
-    if (!trimmed) return;
-
-    const newHistory = [trimmed, ...history.filter((h) => h !== trimmed)].slice(
-      0,
-      MAX_HISTORY,
-    );
-    saveHistory(newHistory);
-
-    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
-  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    performSearch(query);
+    performSearch(query, router.push);
   };
 
   const handleHistoryClick = (item: string) => {
     setQuery(item);
     setIsFocused(false);
-    performSearch(item);
+    performSearch(item, router.push);
   };
 
   const removeItem = (item: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const newHistory = history.filter((h) => h !== item);
-    saveHistory(newHistory);
+    saveHistory(history.filter((h) => h !== item));
   };
 
   // Filter history based on query - only show if query has text
@@ -76,7 +38,7 @@ export default function HeroSearchBar() {
           // include if it contains the query but is not an exact match
           return hLower.includes(qLower) && hLower !== qLower;
         })
-        .slice(0, MAX_HISTORY)
+        .slice(0, 5)
     : [];
 
   return (
@@ -98,42 +60,13 @@ export default function HeroSearchBar() {
           </TextField.Root>
         </form>
       </Flex>
-      {isFocused && filteredHistory.length > 0 && (
-        <Flex style={{ width: "100%" }} mt={"1"}>
-          <Card
-            ref={dropdownRef}
-            style={{ width: "100%" }}
-            onMouseDown={(e) => {
-              // Prevent blur when clicking inside dropdown
-              e.preventDefault();
-            }}
-          >
-            <Flex direction={"column"} gap={"2"}>
-              {filteredHistory.map((item) => (
-                <div key={item}>
-                  <Flex
-                    align={"center"}
-                    justify={"between"}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleHistoryClick(item)}
-                  >
-                    <Flex align={"center"} gap={"2"}>
-                      <CountdownTimerIcon color="gray" />
-                      <Text color="gray">{item}</Text>
-                    </Flex>
-                    <Button
-                      variant="ghost"
-                      onClick={(e) => removeItem(item, e)}
-                    >
-                      <Cross1Icon color="gray" />
-                    </Button>
-                  </Flex>
-                </div>
-              ))}
-            </Flex>
-          </Card>
-        </Flex>
-      )}
+      <SearchHistoryDropdown
+        isVisible={isFocused}
+        filteredHistory={filteredHistory}
+        onHistoryClick={handleHistoryClick}
+        onRemoveItem={removeItem}
+        position="relative"
+      />
     </Box>
   );
 }

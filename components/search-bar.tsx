@@ -1,83 +1,37 @@
 "use client";
 import GitHubButton from "@/components/github-button";
+import SearchHistoryDropdown from "@/components/search-history-dropdown";
 import ThemeToggle from "@/components/theme-toggle";
-import {
-  CountdownTimerIcon,
-  Cross1Icon,
-  MagnifyingGlassIcon,
-} from "@radix-ui/react-icons";
-import {
-  Box,
-  Button,
-  Card,
-  Flex,
-  Link,
-  Text,
-  TextField,
-} from "@radix-ui/themes";
+import { useSearchHistory } from "@/utils/useSearchHistory";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Box, Flex, Link, Text, TextField } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 interface SearchBarProps {
   initialQuery?: string | null;
 }
 
-const HISTORY_KEY = "searchHistory";
-const MAX_HISTORY = 5;
-
 export default function SearchBar({ initialQuery }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState(initialQuery ?? "");
   const [isFocused, setIsFocused] = useState(false);
-  const [history, setHistory] = useState<string[]>(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem(HISTORY_KEY);
-      if (stored) {
-        try {
-          return JSON.parse(stored);
-        } catch (e) {
-          console.error("Failed to parse search history", e);
-          return [];
-        }
-      }
-    }
-    return [];
-  });
+  const { history, saveHistory, performSearch } = useSearchHistory();
   const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const saveHistory = (newHistory: string[]) => {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory));
-    setHistory(newHistory);
-  };
-
-  const performSearch = (query: string) => {
-    const trimmed = query.trim();
-    if (!trimmed) return;
-
-    const newHistory = [trimmed, ...history.filter((h) => h !== trimmed)].slice(
-      0,
-      MAX_HISTORY,
-    );
-    saveHistory(newHistory);
-
-    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    performSearch(searchQuery);
+    performSearch(searchQuery, router.push);
   };
 
   const handleHistoryClick = (item: string) => {
     setSearchQuery(item);
     setIsFocused(false);
-    performSearch(item);
+    performSearch(item, router.push);
   };
 
   const removeItem = (item: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const newHistory = history.filter((h) => h !== item);
-    saveHistory(newHistory);
+    saveHistory(history.filter((h) => h !== item));
   };
 
   // Filter history based on query - only show if query has text
@@ -90,7 +44,7 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
           // include if it contains the query but is not an exact match
           return hLower.includes(qLower) && hLower !== qLower;
         })
-        .slice(0, MAX_HISTORY)
+        .slice(0, 5)
     : [];
 
   return (
@@ -148,50 +102,13 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
             </TextField.Root>
           </form>
 
-          {isFocused && filteredHistory.length > 0 && (
-            <Box
-              style={{
-                position: "absolute",
-                top: "calc(100% + 4px)",
-                left: 0,
-                right: 0,
-                zIndex: 100,
-              }}
-            >
-              <Card
-                ref={dropdownRef}
-                style={{ width: "100%" }}
-                onMouseDown={(e) => {
-                  // Prevent blur when clicking inside dropdown
-                  e.preventDefault();
-                }}
-              >
-                <Flex direction={"column"} gap={"2"}>
-                  {filteredHistory.map((item) => (
-                    <div key={item}>
-                      <Flex
-                        align={"center"}
-                        justify={"between"}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleHistoryClick(item)}
-                      >
-                        <Flex align={"center"} gap={"2"}>
-                          <CountdownTimerIcon color="gray" />
-                          <Text color="gray">{item}</Text>
-                        </Flex>
-                        <Button
-                          variant="ghost"
-                          onClick={(e) => removeItem(item, e)}
-                        >
-                          <Cross1Icon color="gray" />
-                        </Button>
-                      </Flex>
-                    </div>
-                  ))}
-                </Flex>
-              </Card>
-            </Box>
-          )}
+          <SearchHistoryDropdown
+            isVisible={isFocused}
+            filteredHistory={filteredHistory}
+            onHistoryClick={handleHistoryClick}
+            onRemoveItem={removeItem}
+            position="absolute"
+          />
         </Box>
       </Flex>
       <Flex
