@@ -115,14 +115,14 @@ export default function SearchHistoryDropdown({
                   onMouseLeave={() => setHoveredItem(null)}
                 >
                   <Flex align={"center"} gap={"2"}>
-                    <CountdownTimerIcon color="gray" />
-                    <Text color="gray">{item}</Text>
+                    <CountdownTimerIcon />
+                    <Text>{item}</Text>
                   </Flex>
                   <Button
                     variant="ghost"
                     onClick={(e) => onRemoveItem(item, e)}
                   >
-                    <Cross1Icon color="gray" />
+                    <Cross1Icon />
                   </Button>
                 </Flex>
               </div>
