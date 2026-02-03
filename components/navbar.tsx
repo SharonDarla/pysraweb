@@ -13,6 +13,7 @@ export default function Navabar() {
         >
           CLI
         </Link>
+        <Link href="/mcp">MCP</Link>
         {/* <Link href="#">Paper</Link> */}
         <Link target="_blank" href="https://saketlab.in/">
           Saket Lab
