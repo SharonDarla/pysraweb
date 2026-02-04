@@ -5,6 +5,7 @@ import SearchBar from "@/components/search-bar";
 import { SERVER_URL } from "@/utils/constants";
 import {
   DownloadIcon,
+  EnterIcon,
   ExternalLinkIcon,
   HomeIcon,
   InfoCircledIcon,
@@ -61,6 +62,7 @@ type Project = {
   title: string;
   summary: string;
   overall_design: string;
+  alias?: string | null;
   pubmed_id: string[];
   samples_ref: string | null;
   series_type: string | null;
@@ -319,6 +321,34 @@ export default function GeoProjectPage() {
                 <Badge size={{ initial: "1", md: "3" }} color="gray">
                   {samples.length} {samples.length === 1 ? "Sample" : "Samples"}
                 </Badge>
+              )}
+              {project.alias?.startsWith("P") && (
+                <a
+                  href={`https://www.ncbi.nlm.nih.gov/bioproject/${project.alias}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Badge
+                    size={{ initial: "1", md: "3" }}
+                    color="green"
+                    style={{ cursor: "pointer" }}
+                  >
+                    {project.alias}
+                    <ExternalLinkIcon />
+                  </Badge>
+                </a>
+              )}
+              {project.alias?.startsWith("S") && (
+                <a href={`/project/sra/${project.alias}`}>
+                  <Badge
+                    size={{ initial: "1", md: "3" }}
+                    color="brown"
+                    style={{ cursor: "pointer" }}
+                  >
+                    {project.alias}
+                    <EnterIcon />
+                  </Badge>
+                </a>
               )}
               {project.relation &&
                 (() => {
