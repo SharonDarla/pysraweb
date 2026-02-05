@@ -200,7 +200,12 @@ export default function SearchPageBody() {
       const url = URL.createObjectURL(zipBlob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "bulk_metadata.zip";
+      const timestamp = new Date()
+        .toISOString()
+        .replace(/[-:]/g, "")
+        .replace(/\..+/, "")
+        .replace("T", "_");
+      a.download = `results_${timestamp}.zip`;
       document.body.appendChild(a);
       a.click();
       a.remove();
