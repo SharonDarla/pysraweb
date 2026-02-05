@@ -4,7 +4,7 @@ import SearchBar from "@/components/search-bar";
 import { useSearchQuery } from "@/context/search_query";
 import { SERVER_URL } from "@/utils/constants";
 import { SearchResult } from "@/utils/types";
-import { ArrowUpIcon } from "@radix-ui/react-icons";
+import { ArrowUpIcon, DownloadIcon } from "@radix-ui/react-icons";
 import {
   Button,
   Flex,
@@ -128,6 +128,8 @@ export default function SearchPageBody() {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const [showTopButton, setShowTopButton] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadFailed, setDownloadFailed] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -137,6 +139,65 @@ export default function SearchPageBody() {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const sortedResults =
+    sortBy === "date"
+      ? [...searchResults].sort(
+          (a, b) =>
+            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
+        )
+      : searchResults;
+
+  const filteredResults = sortedResults.filter((result) => {
+    if (timeFilter === "any") return true;
+    if (timeFilter === "custom") {
+      const from = parseInt(customYearRange.from);
+      const to = parseInt(customYearRange.to);
+      if (!from || !to) return true;
+      const d = new Date(result.updated_at);
+      return d.getFullYear() >= from && d.getFullYear() <= to;
+    }
+    const years = parseInt(timeFilter);
+    const cutoffDate = new Date();
+    cutoffDate.setFullYear(cutoffDate.getFullYear() - years);
+    return new Date(result.updated_at) >= cutoffDate;
+  });
+
+  const handleDownloadResults = async () => {
+    if (isDownloading || filteredResults.length === 0) return;
+
+    setIsDownloading(true);
+    setDownloadFailed(false);
+
+    try {
+      const accessions = filteredResults.map((result) => result.accession);
+      const res = await fetch(`${SERVER_URL}/bulk/metadata`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accessions }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Download failed");
+      }
+
+      const zipBlob = await res.blob();
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "bulk_metadata.zip";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+      setDownloadFailed(true);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <>
       {/* Navbar and search */}
@@ -341,37 +402,15 @@ export default function SearchPageBody() {
                 Fetched {total} result{total == 1 ? "" : "s"} in{" "}
                 {(tookMs / 1000).toFixed(2)} seconds
               </Text>
-              {(sortBy === "date"
-                ? [...searchResults].sort(
-                    (a, b) =>
-                      new Date(b.updated_at).getTime() -
-                      new Date(a.updated_at).getTime(),
-                  )
-                : searchResults
-              )
-                .filter((result) => {
-                  if (timeFilter === "any") return true;
-                  if (timeFilter === "custom") {
-                    const from = parseInt(customYearRange.from);
-                    const to = parseInt(customYearRange.to);
-                    if (!from || !to) return true;
-                    const d = new Date(result.updated_at);
-                    return d.getFullYear() >= from && d.getFullYear() <= to;
-                  }
-                  const years = parseInt(timeFilter);
-                  const cutoffDate = new Date();
-                  cutoffDate.setFullYear(cutoffDate.getFullYear() - years);
-                  return new Date(result.updated_at) >= cutoffDate;
-                })
-                .map((searchResult) => (
-                  <ResultCard
-                    key={searchResult.accession}
-                    accesssion={searchResult.accession}
-                    title={searchResult.title}
-                    summary={searchResult.summary}
-                    updated_at={searchResult.updated_at}
-                  />
-                ))}
+              {filteredResults.map((searchResult) => (
+                <ResultCard
+                  key={searchResult.accession}
+                  accesssion={searchResult.accession}
+                  title={searchResult.title}
+                  summary={searchResult.summary}
+                  updated_at={searchResult.updated_at}
+                />
+              ))}
 
               {/* Infinite scroll trigger */}
               <div ref={loadMoreRef} style={{ minHeight: "1px" }}>
@@ -414,17 +453,36 @@ export default function SearchPageBody() {
           )}
         </Flex>
 
-        {showTopButton && (
+        {filteredResults.length > 0 && (
           <Flex
             position="fixed"
+            direction="column"
+            align={"end"}
+            gap="2"
             style={{ right: "2rem", bottom: "1.5rem", zIndex: 999 }}
           >
-            <Tooltip content="Go to top">
-              <Button
-                variant="classic"
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              >
-                <ArrowUpIcon />
+            {showTopButton && (
+              <Tooltip content="Go back to top">
+                <Button
+                  style={{ width: "fit-content", padding: 16 }}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                >
+                  <ArrowUpIcon />
+                </Button>
+              </Tooltip>
+            )}
+            <Tooltip
+              content={
+                downloadFailed
+                  ? "Download failed. Please try again."
+                  : "Download search results as ZIP"
+              }
+            >
+              <Button onClick={handleDownloadResults} disabled={isDownloading}>
+                {isDownloading ? <Spinner /> : <DownloadIcon />}
+                {isDownloading ? "Preparing ZIP..." : "Download"}
               </Button>
             </Tooltip>
           </Flex>
