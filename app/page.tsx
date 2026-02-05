@@ -4,7 +4,7 @@ import { Flex } from "@radix-ui/themes";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "pysraweb - Search GEO & SRA Datasets",
+  title: "pysraweb - Search GEO and SRA Datasets",
   description:
     "Search and explore millions of GEO and SRA sequencing datasets. Unified metadata views, relevance-ranked results, and consolidated sample tables for faster research.",
   alternates: {

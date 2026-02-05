@@ -41,6 +41,10 @@ async function fetchProjectTitle(accession: string): Promise<string> {
   }
 }
 
+export async function fetchProjectSocialTitle(accession: string) {
+  return fetchProjectTitle(accession);
+}
+
 export async function generateProjectOgImage(
   accession: string,
   kind: ProjectKind,

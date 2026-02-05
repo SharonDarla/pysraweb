@@ -11,7 +11,7 @@ export const viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "pysraweb - Search GEO & SRA Datasets",
+    default: "pysraweb - Search GEO and SRA Datasets",
     template: "%s | pysraweb",
   },
   description:
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://pysraweb.saketlab.org",
     siteName: "pysraweb",
-    title: "pysraweb - Search GEO & SRA Datasets",
+    title: "pysraweb - Search GEO and SRA Datasets",
     description:
       "Fast exploration of GEO and SRA sequencing datasets. Search millions of experiments with unified metadata views and relevance-ranked results.",
     // images: [
