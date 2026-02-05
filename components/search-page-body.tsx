@@ -164,18 +164,33 @@ export default function SearchPageBody() {
   });
 
   const handleDownloadResults = async () => {
-    if (isDownloading || filteredResults.length === 0) return;
+    if (isDownloading || !query) return;
 
     setIsDownloading(true);
     setDownloadFailed(false);
 
     try {
-      const accessions = filteredResults.map((result) => result.accession);
-      const res = await fetch(`${SERVER_URL}/bulk/metadata`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accessions }),
-      });
+      const params = new URLSearchParams();
+      params.set("q", query);
+      if (db === "sra" || db === "geo") {
+        params.set("db", db);
+      }
+
+      if (timeFilter === "custom") {
+        const from = parseInt(customYearRange.from);
+        const to = parseInt(customYearRange.to);
+        if (from) params.set("updated_year_from", String(from));
+        if (to) params.set("updated_year_to", String(to));
+      } else if (timeFilter !== "any") {
+        const years = parseInt(timeFilter);
+        const currentYear = new Date().getFullYear();
+        params.set("updated_year_from", String(currentYear - years));
+        params.set("updated_year_to", String(currentYear));
+      }
+
+      const res = await fetch(
+        `${SERVER_URL}/download/query?${params.toString()}`,
+      );
 
       if (!res.ok) {
         throw new Error("Download failed");
