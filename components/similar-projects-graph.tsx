@@ -53,7 +53,6 @@ type GraphLink = {
 type NeighborDetails = {
   title?: string | null;
   description?: string | null;
-  organisms: string[];
 };
 
 const safeNum = (value: unknown, fallback = 0) =>
@@ -118,6 +117,54 @@ const linkEndpointId = (endpoint: GraphLink["source"]): string | null => {
     return typeof id === "string" ? id : null;
   }
   return null;
+};
+
+const parseBulkOrganismsPayload = (
+  payload: unknown,
+): Map<string, string[]> => {
+  const map = new Map<string, string[]>();
+
+  const add = (accession: unknown, organisms: unknown) => {
+    if (typeof accession !== "string" || accession.length === 0) return;
+    map.set(accession.toUpperCase(), normalizeOrganisms(organisms));
+  };
+
+  if (Array.isArray(payload)) {
+    payload.forEach((entry) => {
+      if (!entry || typeof entry !== "object") return;
+      const item = entry as Record<string, unknown>;
+      add(item.accession, item.organisms);
+    });
+    return map;
+  }
+
+  if (payload && typeof payload === "object") {
+    const obj = payload as Record<string, unknown>;
+
+    if (Array.isArray(obj.results)) {
+      obj.results.forEach((entry) => {
+        if (!entry || typeof entry !== "object") return;
+        const item = entry as Record<string, unknown>;
+        add(item.accession, item.organisms);
+      });
+      return map;
+    }
+
+    if (Array.isArray(obj.data)) {
+      obj.data.forEach((entry) => {
+        if (!entry || typeof entry !== "object") return;
+        const item = entry as Record<string, unknown>;
+        add(item.accession, item.organisms);
+      });
+      return map;
+    }
+
+    Object.entries(obj).forEach(([accession, organisms]) => {
+      add(accession, organisms);
+    });
+  }
+
+  return map;
 };
 
 function nodeLabel(node: GraphNode) {
@@ -187,7 +234,6 @@ export default function SimilarProjectsGraph({
               {
                 title: neighborTitle,
                 description: neighborDescription,
-                organisms: normalizeOrganisms(payload.organisms),
               } as NeighborDetails,
             ] as const;
           } catch {
@@ -205,6 +251,25 @@ export default function SimilarProjectsGraph({
     enabled: uniqueNeighborAccessions.length > 0,
     staleTime: 5 * 60 * 1000,
   });
+
+  const { data: bulkOrganismsMap, isLoading: isBulkOrganismsLoading } =
+    useQuery({
+      queryKey: ["bulk-organisms", uniqueNeighborAccessions.join(",")],
+      queryFn: async () => {
+        const res = await fetch(`${SERVER_URL}/bulk/organisms`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accessions: uniqueNeighborAccessions }),
+        });
+        if (!res.ok) {
+          throw new Error("Failed to fetch organisms in bulk");
+        }
+        const payload = (await res.json()) as unknown;
+        return parseBulkOrganismsPayload(payload);
+      },
+      enabled: uniqueNeighborAccessions.length > 0,
+      staleTime: 5 * 60 * 1000,
+    });
 
   const centerOrganisms = useMemo(() => normalizeOrganisms(organisms), [organisms]);
 
@@ -285,7 +350,7 @@ export default function SimilarProjectsGraph({
           description: n.description ?? detail?.description ?? null,
           organisms: normalizeOrganisms(n.organisms).length
             ? normalizeOrganisms(n.organisms)
-            : (detail?.organisms ?? []),
+            : (bulkOrganismsMap?.get(n.accession.toUpperCase()) ?? []),
           isCenter: false,
           x,
           y,
@@ -315,6 +380,7 @@ export default function SimilarProjectsGraph({
     coords3d,
     normalizedNeighbors,
     neighborDetails,
+    bulkOrganismsMap,
     centerOrganisms,
   ]);
 
@@ -448,7 +514,7 @@ export default function SimilarProjectsGraph({
   return (
     <Flex direction="column" gap="3">
       <Flex justify="between" align="center" gap="2" wrap="wrap">
-        {isDetailsLoading ? (
+        {isDetailsLoading || isBulkOrganismsLoading ? (
           <Flex align="center" gap="1">
             <Spinner size="1" />
             <Text size="2" color="gray">
