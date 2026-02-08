@@ -131,20 +131,35 @@ const fetchPubMedData = async (
     return [];
   }
 
+  const uniqueIds = Array.from(
+    new Set(pubmedIds.map((id) => id.trim()).filter(Boolean)),
+  );
+  const chunkSize = 100;
   const articles: PubMedArticle[] = [];
 
-  for (const id of pubmedIds) {
+  for (let i = 0; i < uniqueIds.length; i += chunkSize) {
+    const chunk = uniqueIds.slice(i, i + chunkSize);
+
     try {
       const res = await fetch(
-        `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${id}&retmode=json`,
+        `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${encodeURIComponent(chunk.join(","))}&retmode=json`,
       );
       if (!res.ok) continue;
-      const data = await res.json();
-      if (data.result && data.result[id]) {
-        articles.push(data.result[id] as PubMedArticle);
-      }
+
+      const data = (await res.json()) as {
+        result?: Record<string, PubMedArticle | string[]>;
+      };
+      const result = data.result;
+      if (!result) continue;
+
+      chunk.forEach((id) => {
+        const article = result[id];
+        if (article && typeof article === "object") {
+          articles.push(article as PubMedArticle);
+        }
+      });
     } catch (error) {
-      console.error(`Failed to fetch PubMed data for ID ${id}:`, error);
+      console.error(`Failed to fetch PubMed data for chunk:`, error);
     }
   }
 
