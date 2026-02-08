@@ -1,10 +1,10 @@
 "use client";
 
+import type { ForceGraph3DInstance } from "3d-force-graph";
 import { SERVER_URL } from "@/utils/constants";
 import { Badge, Flex, Spinner, Text } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
-import type { ForceGraph3DInstance } from "3d-force-graph";
-import React, { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 export type SimilarNeighbor = {
   accession: string;
@@ -121,7 +121,9 @@ export default function SimilarProjectsGraph({
       const results = await Promise.all(
         uniqueNeighborAccessions.map(async (neighborAccession) => {
           try {
-            const res = await fetch(`${SERVER_URL}/project/${neighborAccession}`);
+            const res = await fetch(
+              `${SERVER_URL}/project/${neighborAccession}`,
+            );
             if (!res.ok) return null;
             const payload = (await res.json()) as Record<string, unknown>;
             const neighborTitle =
@@ -193,9 +195,7 @@ export default function SimilarProjectsGraph({
     const radii = rawNeighbors
       .map((item) =>
         Math.sqrt(
-          item.rawX * item.rawX +
-            item.rawY * item.rawY +
-            item.rawZ * item.rawZ,
+          item.rawX * item.rawX + item.rawY * item.rawY + item.rawZ * item.rawZ,
         ),
       )
       .filter((r) => r > 0);
@@ -346,25 +346,23 @@ export default function SimilarProjectsGraph({
     <Flex direction="column" gap="3">
       <Flex justify="between" align="center" gap="2" wrap="wrap">
         <Text size="2" color="gray">
-          3D view
+          Hover a node to view title and description. Click a neighbor to open
+          it.
         </Text>
         <Flex align="center" gap="2" wrap="wrap">
-          <Badge color="amber">Center</Badge>
           <Badge color="blue">GEO</Badge>
-          <Badge color="violet">SRA</Badge>
+          <Badge color="brown">SRA</Badge>
           {isDetailsLoading && (
             <Flex align="center" gap="1">
               <Spinner size="1" />
               <Text size="1" color="gray">
-                Loading neighbor metadata
+                Loading
               </Text>
             </Flex>
           )}
         </Flex>
       </Flex>
-      <Text size="2" color="gray">
-        Hover a node to view title and description. Click a neighbor to open it.
-      </Text>
+
       <div
         ref={mountRef}
         style={{

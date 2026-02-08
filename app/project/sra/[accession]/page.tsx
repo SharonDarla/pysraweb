@@ -1,8 +1,6 @@
 "use client";
 import ProjectSummary from "@/components/project-summary";
-import PublicationCard, {
-  PubMedArticle,
-} from "@/components/publication-card";
+import PublicationCard, { PubMedArticle } from "@/components/publication-card";
 import SearchBar from "@/components/search-bar";
 import SimilarProjectsGraph, {
   SimilarNeighbor,
@@ -157,7 +155,9 @@ const normalizeExternalIds = (
   if (!parsed || typeof parsed !== "object") return [];
 
   const entries: { key: string; value: string }[] = [];
-  for (const [key, value] of Object.entries(parsed as Record<string, unknown>)) {
+  for (const [key, value] of Object.entries(
+    parsed as Record<string, unknown>,
+  )) {
     if (Array.isArray(value)) {
       value.forEach((item) => {
         if (item) entries.push({ key, value: String(item) });
@@ -821,6 +821,9 @@ export default function ProjectPage() {
               <Text weight="medium" size="6">
                 Similar projects
               </Text>
+              <Badge color="teal" size={"2"}>
+                Beta
+              </Badge>
             </Flex>
             <SimilarProjectsGraph
               accession={project.accession}

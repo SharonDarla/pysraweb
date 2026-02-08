@@ -860,6 +860,9 @@ export default function GeoProjectPage() {
               <Text weight="medium" size="6">
                 Similar projects
               </Text>
+              <Badge color="teal" size={"2"}>
+                Beta
+              </Badge>
             </Flex>
             <SimilarProjectsGraph
               accession={project.accession}
