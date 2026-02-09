@@ -5,7 +5,7 @@ type ResultCardProps = {
   accesssion: string;
   title: string | null;
   summary: string | null;
-  updated_at: Date | null;
+  updated_at: string | null;
 };
 
 export default function ResultCard({
@@ -20,6 +20,11 @@ export default function ResultCard({
     if (accesssion.startsWith("G")) router.push(`/project/geo/${accesssion}`);
     else router.push(`/project/sra/${accesssion}`);
   };
+
+   const updatedDate =
+    updated_at && !Number.isNaN(new Date(updated_at).getTime())
+      ? new Date(updated_at)
+      : null;
 
   return (
     <Card>
