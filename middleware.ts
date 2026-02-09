@@ -47,6 +47,16 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // /project/gse/{accession} -> /p/{accession} (alternate GEO format)
+  if (pathname.startsWith("/project/gse/")) {
+    const accession = pathname.slice(13); // Remove '/project/gse/'
+    if (accession) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/p/${accession}`;
+      return NextResponse.redirect(url, 301);
+    }
+  }
+
   return NextResponse.next();
 }
 
@@ -56,5 +66,6 @@ export const config = {
     "/project/sra/:path*",
     "/project/g/:path*",
     "/project/s/:path*",
+    "/project/gse/:path*",
   ],
 };
