@@ -439,13 +439,13 @@ export default function MapGraph() {
         pickable: false,
         getPosition: (d) => [d.x, d.y],
         getFillColor: [255, 92, 71, 255],
-        getRadius: 1.4,
+        getRadius: 0.9,
         radiusUnits: "pixels",
-        radiusMinPixels: 1.6,
-        radiusMaxPixels: 2.8,
+        radiusMinPixels: 1,
+        radiusMaxPixels: 1.6,
         stroked: true,
         getLineColor: [255, 255, 255, 220],
-        lineWidthMinPixels: 0.8,
+        lineWidthMinPixels: 0.5,
       }),
       new TextLayer<ClusterPoint>({
         id: "map-cluster-labels",
@@ -675,6 +675,7 @@ export default function MapGraph() {
       <DeckGL
         views={new OrthographicView({ id: "ortho" })}
         controller={{ dragPan: true, scrollZoom: true, touchZoom: true }}
+        pickingRadius={8}
         viewState={{
           ...viewState,
           minZoom: MIN_ZOOM,
