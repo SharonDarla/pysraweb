@@ -155,6 +155,11 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
+function truncateText(value: string, maxLength: number): string {
+  if (value.length <= maxLength) return value;
+  return `${value.slice(0, maxLength)}...`;
+}
+
 async function fetchProjectMetadata(accession: string): Promise<ProjectMetadata> {
   const response = await fetch(
     `${SERVER_URL}/project/${encodeURIComponent(accession)}/metadata`,
@@ -608,7 +613,9 @@ export default function MapGraph() {
                     </Text>
                   </Link>
                   <Text size="2" color="gray">
-                    {metadataQuery.data.description || "No description available."}
+                    {metadataQuery.data.description
+                      ? truncateText(metadataQuery.data.description, 100)
+                      : "No description available."}
                   </Text>
                 </>
               )}
