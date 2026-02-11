@@ -22,6 +22,7 @@ import {
   Tooltip,
 } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
+import { useTheme } from "next-themes";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type DecodedPoint = {
@@ -54,10 +55,12 @@ type ViewState = {
   zoom: number;
 };
 
-const POINT_COLOR: [number, number, number, number] = [97, 207, 196, 210];
-const CLUSTER_TEXT_COLOR: [number, number, number, number] = [
+const POINT_COLOR_DARK: [number, number, number, number] = [97, 207, 196, 210];
+const POINT_COLOR_LIGHT: [number, number, number, number] = [72, 136, 245, 210];
+const CLUSTER_TEXT_COLOR_DARK: [number, number, number, number] = [
   255, 255, 255, 235,
 ];
+const CLUSTER_TEXT_COLOR_LIGHT: [number, number, number, number] = [34, 41, 51, 235];
 const MIN_ZOOM = -8;
 const MAX_ZOOM = 22;
 const CLUSTER_LABEL_MIN_ZOOM = 0.9;
@@ -176,6 +179,7 @@ async function fetchProjectMetadata(
 }
 
 export default function MapGraph() {
+  const { resolvedTheme } = useTheme();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [viewState, setViewState] = useState<ViewState>(INITIAL_VIEW_STATE);
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
@@ -392,6 +396,11 @@ export default function MapGraph() {
     return lookup;
   }, [points]);
 
+  const pointColor =
+    resolvedTheme === "light" ? POINT_COLOR_LIGHT : POINT_COLOR_DARK;
+  const clusterTextColor =
+    resolvedTheme === "light" ? CLUSTER_TEXT_COLOR_LIGHT : CLUSTER_TEXT_COLOR_DARK;
+
   const layers = useMemo(
     () => [
       new ScatterplotLayer<DecodedPoint>({
@@ -399,7 +408,7 @@ export default function MapGraph() {
         data: points,
         pickable: true,
         getPosition: (d) => [d.x, d.y],
-        getFillColor: POINT_COLOR,
+        getFillColor: pointColor,
         getRadius: 0.4,
         radiusUnits: "pixels",
         radiusMinPixels: 0.2,
@@ -456,7 +465,7 @@ export default function MapGraph() {
         fontFamily:
           "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
         getSize: 12,
-        getColor: CLUSTER_TEXT_COLOR,
+        getColor: clusterTextColor,
         fontWeight: 700,
         getTextAnchor: "middle",
         getAlignmentBaseline: "bottom",
@@ -469,6 +478,8 @@ export default function MapGraph() {
       visibleClusters,
       windowSize.width,
       windowSize.height,
+      pointColor,
+      clusterTextColor,
     ],
   );
 
