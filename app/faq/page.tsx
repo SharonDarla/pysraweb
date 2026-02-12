@@ -18,15 +18,16 @@ export default function FAQ() {
       <SearchBar />
       <Flex
         gap="4"
-        py={"4"}
-        ml={{ initial: "1rem", md: "13rem" }}
-        mr={{ initial: "1rem", md: "16rem" }}
+        py={{ initial: "4", md: "4" }}
+        px={{ initial: "4", md: "0" }}
+        ml={{ initial: "0", md: "13rem" }}
+        mr={{ initial: "0", md: "16rem" }}
         direction={"column"}
       >
-        <Text size={"8"} weight={"bold"}>
+        <Text size={{ initial: "6", md: "8" }} weight={"bold"}>
           About
         </Text>
-        <Text>
+        <Text size={{ initial: "2", md: "3" }}>
           pysraweb (<i>/paɪ ˌɛs ɑːr eɪ wɛb/</i>) is a web app for fast
           exploration of datasets from the{" "}
           <Link href="https://www.ncbi.nlm.nih.gov/sra">
@@ -40,14 +41,14 @@ export default function FAQ() {
           metadata, substantially reducing navigation overhead and enabling
           faster exploration and comparison of studies.
         </Text>
-        <Text size={"8"} weight={"bold"}>
+        <Text size={{ initial: "6", md: "8" }} weight={"bold"}>
           Frequently Asked Questions
         </Text>
         <Flex direction={"column"} gap={"3"}>
-          <Text size={"6"} weight={"medium"}>
+          <Text size={{ initial: "4", md: "6" }} weight={"medium"}>
             Where does pysraweb fetch its datasets from?
           </Text>
-          <Text>
+          <Text size={{ initial: "2", md: "3" }}>
             We maintain a local mirror of all publicly available datasets on
             NCBI&apos;s FTP servers. This includes all{" "}
             <Link href="https://ftp.ncbi.nlm.nih.gov/sra/reports/Metadata/">
@@ -60,20 +61,20 @@ export default function FAQ() {
         </Flex>
 
         <Flex direction={"column"} gap={"3"}>
-          <Text size={"6"} weight={"medium"}>
+          <Text size={{ initial: "4", md: "6" }} weight={"medium"}>
             Does pysraweb download sequencing data?
           </Text>
-          <Text>
+          <Text size={{ initial: "2", md: "3" }}>
             No. pysraweb only indexes and serves metadata. It does not download
             or host raw sequencing files such as FASTQ or BAM.
           </Text>
         </Flex>
 
         <Flex direction={"column"} gap={"3"}>
-          <Text size={"6"} weight={"medium"}>
+          <Text size={{ initial: "4", md: "6" }} weight={"medium"}>
             How is pysraweb different from browsing NCBI directly?
           </Text>
-          <Text>
+          <Text size={{ initial: "2", md: "3" }}>
             pysraweb provides unified SRA and GEO metadata, relevance-ranked
             search, and consolidated tabular views, eliminating multi-page
             navigation and reducing discovery time.
@@ -81,19 +82,19 @@ export default function FAQ() {
         </Flex>
 
         <Flex direction={"column"} gap={"3"}>
-          <Text size={"6"} weight={"medium"}>
+          <Text size={{ initial: "4", md: "6" }} weight={"medium"}>
             Is pysraweb suitable for large-scale searches?
           </Text>
-          <Text>
+          <Text size={{ initial: "2", md: "3" }}>
             Yes. The backend is optimized for low-latency queries over millions
             of records, enabling fast filtering and comparison across studies.
           </Text>
         </Flex>
         <Flex direction={"column"} gap={"3"}>
-          <Text size={"6"} weight={"medium"}>
+          <Text size={{ initial: "4", md: "6" }} weight={"medium"}>
             Who is pysraweb intended for?
           </Text>
-          <Text>
+          <Text size={{ initial: "2", md: "3" }}>
             pysraweb is designed for researchers who frequently explore public
             sequencing metadata and want faster, more structured discovery
             workflows.
@@ -104,11 +105,12 @@ export default function FAQ() {
         direction={{ initial: "column", md: "row" }}
         pt={"6"}
         pb={"4"}
+        px={{ initial: "4", md: "0" }}
         align={"baseline"}
         gap={"4"}
         justify={"between"}
-        ml={{ initial: "1rem", md: "13rem" }}
-        mr={{ initial: "1rem", md: "16rem" }}
+        ml={{ initial: "0", md: "13rem" }}
+        mr={{ initial: "0", md: "16rem" }}
       >
         <Image
           width="198"
