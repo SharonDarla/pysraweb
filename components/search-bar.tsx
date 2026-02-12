@@ -15,9 +15,9 @@ import {
   Card,
   Flex,
   Link,
-  Text,
   TextField,
 } from "@radix-ui/themes";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -105,15 +105,14 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
       >
         <Link href="/" style={{ textDecoration: "none" }}>
           <Box width={{ initial: "6rem", md: "11rem" }}>
-            <Text
-              color="gray"
-              size={{ initial: "5", md: "8" }}
-              weight={"bold"}
-              style={{ fontFamily: "monospace" }}
-              align={"center"}
-            >
-              pysraweb
-            </Text>
+            <Image
+              src="/pysraweb_logo.png"
+              alt="pysraweb"
+              width={1293}
+              height={235}
+              style={{ width: "100%", height: "auto" }}
+              priority
+            />
           </Box>
         </Link>
 
