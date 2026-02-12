@@ -14,6 +14,7 @@ import {
 import {
   Box,
   Card,
+  Checkbox,
   Flex,
   IconButton,
   Link,
@@ -29,6 +30,10 @@ type DecodedPoint = {
   accession: string;
   x: number;
   y: number;
+};
+
+type RenderPoint = DecodedPoint & {
+  fillColor: [number, number, number, number];
 };
 
 type ClusterRaw = {
@@ -165,6 +170,29 @@ function truncateText(value: string, maxLength: number): string {
   return `${value.slice(0, maxLength)}...`;
 }
 
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const hp = h / 60;
+  const x = c * (1 - Math.abs((hp % 2) - 1));
+  let r = 0;
+  let g = 0;
+  let b = 0;
+
+  if (hp >= 0 && hp < 1) [r, g, b] = [c, x, 0];
+  else if (hp < 2) [r, g, b] = [x, c, 0];
+  else if (hp < 3) [r, g, b] = [0, c, x];
+  else if (hp < 4) [r, g, b] = [0, x, c];
+  else if (hp < 5) [r, g, b] = [x, 0, c];
+  else [r, g, b] = [c, 0, x];
+
+  const m = l - c / 2;
+  return [
+    Math.round((r + m) * 255),
+    Math.round((g + m) * 255),
+    Math.round((b + m) * 255),
+  ];
+}
+
 async function fetchProjectMetadata(
   accession: string,
 ): Promise<ProjectMetadata> {
@@ -186,6 +214,7 @@ export default function MapGraph() {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [searchInput, setSearchInput] = useState("");
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [colorByClusters, setColorByClusters] = useState(false);
   const [highlightedPoint, setHighlightedPoint] = useState<DecodedPoint | null>(
     null,
   );
@@ -401,14 +430,66 @@ export default function MapGraph() {
   const clusterTextColor =
     resolvedTheme === "light" ? CLUSTER_TEXT_COLOR_LIGHT : CLUSTER_TEXT_COLOR_DARK;
 
+  const renderPoints = useMemo<RenderPoint[]>(() => {
+    if (!colorByClusters || clusters.length === 0) {
+      return points.map((point) => ({ ...point, fillColor: pointColor }));
+    }
+
+    const topClusters = clusters.slice(0, 32);
+    const maxNumPoints = topClusters[0]?.num_points ?? 1;
+    const minRadius = 120;
+    const maxRadius = 700;
+
+    const clusterStyles = topClusters.map((cluster, idx) => {
+      const hue = (idx * 137.5) % 360;
+      const [r, g, b] = hslToRgb(hue, 0.8, resolvedTheme === "light" ? 0.52 : 0.58);
+      const radiusNorm = Math.sqrt(cluster.num_points / maxNumPoints);
+      const radius = minRadius + (maxRadius - minRadius) * radiusNorm;
+      return { ...cluster, color: [r, g, b] as [number, number, number], radius };
+    });
+
+    return points.map((point) => {
+      let bestScore = 0;
+      let bestColor: [number, number, number] | null = null;
+
+      for (const cluster of clusterStyles) {
+        const dx = point.x - cluster.x;
+        const dy = point.y - cluster.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > cluster.radius) continue;
+
+        const score = 1 - dist / cluster.radius;
+        if (score > bestScore) {
+          bestScore = score;
+          bestColor = cluster.color;
+        }
+      }
+
+      if (!bestColor || bestScore <= 0) {
+        return { ...point, fillColor: pointColor };
+      }
+
+      const blend = clamp(bestScore * 0.9, 0.2, 0.9);
+      const base = pointColor;
+      const color: [number, number, number, number] = [
+        Math.round(base[0] * (1 - blend) + bestColor[0] * blend),
+        Math.round(base[1] * (1 - blend) + bestColor[1] * blend),
+        Math.round(base[2] * (1 - blend) + bestColor[2] * blend),
+        base[3],
+      ];
+
+      return { ...point, fillColor: color };
+    });
+  }, [colorByClusters, clusters, points, pointColor, resolvedTheme]);
+
   const layers = useMemo(
     () => [
-      new ScatterplotLayer<DecodedPoint>({
+      new ScatterplotLayer<RenderPoint>({
         id: "map-points",
-        data: points,
+        data: renderPoints,
         pickable: true,
         getPosition: (d) => [d.x, d.y],
-        getFillColor: pointColor,
+        getFillColor: (d) => d.fillColor,
         getRadius: 0.4,
         radiusUnits: "pixels",
         radiusMinPixels: 0.2,
@@ -473,12 +554,11 @@ export default function MapGraph() {
       }),
     ],
     [
-      points,
+      renderPoints,
       highlightedPoint,
       visibleClusters,
       windowSize.width,
       windowSize.height,
-      pointColor,
       clusterTextColor,
     ],
   );
@@ -569,6 +649,20 @@ export default function MapGraph() {
               )}
             </Flex>
           </form>
+        </Card>
+      </Box>
+      <Box style={{ position: "absolute", top: 12, right: 12, zIndex: 22 }}>
+        <Card>
+          <Flex align="center" gap="2">
+            <Checkbox
+              id="cluster-color-toggle"
+              checked={colorByClusters}
+              onCheckedChange={(checked) => setColorByClusters(Boolean(checked))}
+            />
+            <Text as="label" htmlFor="cluster-color-toggle" size="2">
+              Color by clusters
+            </Text>
+          </Flex>
         </Card>
       </Box>
       <Box style={{ position: "absolute", right: 12, bottom: 24, zIndex: 20 }}>
