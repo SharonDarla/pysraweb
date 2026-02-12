@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Badge, Box, Button, Card, Flex, Popover, ScrollArea, Separator, Text } from "@radix-ui/themes";
+import { Badge, Box, Button, Card, Flex, Popover, ScrollArea, Text } from "@radix-ui/themes";
 
 type OrganismFacet = { name: string; count: number };
 
@@ -38,20 +38,13 @@ function FilterList({
 }) {
   return (
     <Flex direction="column" gap="2">
-      <Flex align="center" justify="between">
-        <Text weight="bold">Organisms</Text>
-        {selected ? (
+      {selected ? (
+        <Flex justify="end">
           <Button size="1" variant="soft" onClick={onClear}>
             Clear
           </Button>
-        ) : null}
-      </Flex>
-
-      <Text size="1" color="gray">
-        Click an organism to filter results.
-      </Text>
-
-      <Separator size="4" />
+        </Flex>
+      ) : null}
 
       {/* "All" options */}
       <Button
@@ -132,7 +125,7 @@ export function OrganismFilter({
         <Popover.Root>
           <Popover.Trigger>
             <Button variant="soft" style={{ width: "100%" }}>
-              Organism filter {selected ? `• ${selected}` : ""}
+              {selected ? selected : "Organisms"}
             </Button>
           </Popover.Trigger>
 

@@ -21,11 +21,6 @@ export default function ResultCard({
     router.push(getProjectShortUrl(accesssion));
   };
 
-   const updatedDate =
-    updated_at && !Number.isNaN(new Date(updated_at).getTime())
-      ? new Date(updated_at)
-      : null;
-
   return (
     <Card>
       <Flex direction={"column"} gap={"2"}>
