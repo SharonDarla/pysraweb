@@ -42,14 +42,6 @@ function FilterList({
 
   return (
     <Flex direction="column" gap="2">
-      {selected ? (
-        <Flex justify="end">
-          <Button size="1" variant="soft" onClick={onClear}>
-            Clear
-          </Button>
-        </Flex>
-      ) : null}
-
       {/* "All" options */}
       <Button
         variant={selected === null ? "solid" : "soft"}
