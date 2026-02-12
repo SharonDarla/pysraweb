@@ -96,6 +96,9 @@ export default function SearchPageBody() {
     enabled: !!query,
   });
 
+  const total = data?.pages?.[0]?.total ?? 0;
+  const tookMs = data?.pages?.[0]?.took_ms ?? 0;
+
   // Flatten all pages into a single array of results
   const searchResults =
     data?.pages.flatMap((page) => page?.results ?? []) ?? [];
@@ -291,6 +294,10 @@ export default function SearchPageBody() {
             </Flex>
               ) : searchResults.length > 0 ? (
             <>
+              <Text color="gray" weight={"light"}>
+                Fetched {total} result{total == 1 ? "" : "s"} in{" "}
+                {(tookMs / 1000).toFixed(2)} seconds
+              </Text>
               {organismFilteredResults.length === 0 ? (
                 <Flex
                   align="center"
@@ -358,11 +365,13 @@ export default function SearchPageBody() {
           )}
         </Flex>
 
-        <SearchOrganismRail
-          results={searchResults}
-          selectedOrganism={selectedOrganism}
-          setSelectedOrganism={setSelectedOrganism}
-        />
+        {!isLoading && !isError && searchResults.length > 0 && (
+          <SearchOrganismRail
+            results={searchResults}
+            selectedOrganism={selectedOrganism}
+            setSelectedOrganism={setSelectedOrganism}
+          />
+        )}
 
 
         {organismFilteredResults.length > 0 && (

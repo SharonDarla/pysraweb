@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Badge, Box, Button, Card, Flex, Popover, ScrollArea, Text } from "@radix-ui/themes";
+import { Badge, Button, Card, Flex, ScrollArea, Text } from "@radix-ui/themes";
 
 type OrganismFacet = { name: string; count: number };
 
@@ -36,6 +36,10 @@ function FilterList({
   onSelect: (name: string) => void;
   onClear: () => void;
 }) {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  const hasMoreThanTop = facets.length > 5;
+  const visibleFacets = isExpanded ? facets : facets.slice(0, 5);
+
   return (
     <Flex direction="column" gap="2">
       {selected ? (
@@ -58,9 +62,13 @@ function FilterList({
       </Button>
 
       {/* Organisms list */}
-      <ScrollArea type="always" scrollbars="vertical" style={{ maxHeight: 420 }}>
+      <ScrollArea
+        type="always"
+        scrollbars="vertical"
+        style={{ maxHeight: isExpanded ? 360 : undefined }}
+      >
         <Flex direction="column" gap="2" pr="2">
-          {facets.map((f) => {
+          {visibleFacets.map((f) => {
             const active = selected === f.name;
             return (
               <Button
@@ -85,6 +93,17 @@ function FilterList({
           ) : null}
         </Flex>
       </ScrollArea>
+
+      {hasMoreThanTop ? (
+        <Button
+          size="1"
+          variant="soft"
+          color="gray"
+          onClick={() => setIsExpanded((prev) => !prev)}
+        >
+          {isExpanded ? "Show less" : `Show ${facets.length - 5} more`}
+        </Button>
+      ) : null}
     </Flex>
   );
 }
@@ -106,40 +125,14 @@ export function OrganismFilter({
   const onSelect = (name: string) => onChangeSelected(name);
 
   return (
-    <>
-      {/* Desktop right sidebar */}
-      <Box className="hidden lg:block">
-        <Card className="sticky top-24">
-          <FilterList
-            facets={facets}
-            selected={selected}
-            totalCount={totalCount}
-            onSelect={onSelect}
-            onClear={onClear}
-          />
-        </Card>
-      </Box>
-
-      {/* Mobile: Popover */}
-      <Box className="lg:hidden">
-        <Popover.Root>
-          <Popover.Trigger>
-            <Button variant="soft" style={{ width: "100%" }}>
-              {selected ? selected : "Organisms"}
-            </Button>
-          </Popover.Trigger>
-
-          <Popover.Content style={{ width: "min(92vw, 420px)" }}>
-            <FilterList
-              facets={facets}
-              selected={selected}
-              totalCount={totalCount}
-              onSelect={onSelect}
-              onClear={onClear}
-            />
-          </Popover.Content>
-        </Popover.Root>
-      </Box>
-    </>
+    <Card>
+      <FilterList
+        facets={facets}
+        selected={selected}
+        totalCount={totalCount}
+        onSelect={onSelect}
+        onClear={onClear}
+      />
+    </Card>
   );
 }
