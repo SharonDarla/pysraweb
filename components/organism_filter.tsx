@@ -45,12 +45,14 @@ function FilterList({
       {/* "All" options */}
       <Button
         variant={selected === null ? "solid" : "soft"}
-        color={selected === null ? "blue" : "gray"}
+        color={selected === null ? undefined : "gray"}
         onClick={onClear}
         style={{ justifyContent: "space-between" }}
       >
         <span>All organisms</span>
-        <Badge variant="soft">{totalCount}</Badge>
+        <Badge variant={selected === null ? "solid" : "soft"}>
+          {totalCount}
+        </Badge>
       </Button>
 
       {/* Organisms list */}
@@ -65,7 +67,7 @@ function FilterList({
               <Button
                 key={f.name}
                 variant={active ? "solid" : "soft"}
-                color={active ? "blue" : "gray"}
+                color={active ? undefined : "gray"}
                 onClick={() => onSelect(f.name)}
                 style={{ justifyContent: "space-between", textAlign: "left" }}
               >
