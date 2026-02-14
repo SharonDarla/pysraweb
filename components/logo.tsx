@@ -1,37 +1,35 @@
 import Image from "next/image";
 
 interface LogoProps {
-  width?: number;
-  height?: number;
   style?: React.CSSProperties;
   priority?: boolean;
   className?: string;
 }
 
 export default function Logo({
-  width = 619,
-  height = 103,
   style,
   priority = false,
   className,
 }: LogoProps) {
   return (
-    <span className={className} style={style}>
+    <span className={className} style={{ display: "inline-block", ...style }}>
       <Image
         src="/logo-light.svg"
         alt="pysraweb"
-        width={width}
-        height={height}
+        width={619}
+        height={103}
         priority={priority}
         className="logo-light"
+        style={{ width: "100%", height: "auto" }}
       />
       <Image
         src="/logo-dark.svg"
         alt="pysraweb"
-        width={width}
-        height={height}
+        width={619}
+        height={103}
         priority={priority}
         className="logo-dark"
+        style={{ width: "100%", height: "auto" }}
       />
     </span>
   );
