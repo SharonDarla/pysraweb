@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Badge, Box, Button, Card, Flex, Popover, ScrollArea, Separator, Text } from "@radix-ui/themes";
+import { Badge, Button, Card, Flex, Text } from "@radix-ui/themes";
 
 type OrganismFacet = { name: string; count: number };
 
@@ -36,44 +36,38 @@ function FilterList({
   onSelect: (name: string) => void;
   onClear: () => void;
 }) {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  const hasMoreThanTop = facets.length > 5;
+  const visibleFacets = isExpanded ? facets : facets.slice(0, 5);
+
   return (
     <Flex direction="column" gap="2">
-      <Flex align="center" justify="between">
-        <Text weight="bold">Organisms</Text>
-        {selected ? (
-          <Button size="1" variant="soft" onClick={onClear}>
-            Clear
-          </Button>
-        ) : null}
-      </Flex>
-
-      <Text size="1" color="gray">
-        Click an organism to filter results.
-      </Text>
-
-      <Separator size="4" />
-
       {/* "All" options */}
       <Button
         variant={selected === null ? "solid" : "soft"}
-        color={selected === null ? "blue" : "gray"}
+        color={selected === null ? undefined : "gray"}
         onClick={onClear}
         style={{ justifyContent: "space-between" }}
       >
         <span>All organisms</span>
-        <Badge variant="soft">{totalCount}</Badge>
+        <Badge variant={selected === null ? "solid" : "soft"}>
+          {totalCount}
+        </Badge>
       </Button>
 
       {/* Organisms list */}
-      <ScrollArea type="always" scrollbars="vertical" style={{ maxHeight: 420 }}>
-        <Flex direction="column" gap="2" pr="2">
-          {facets.map((f) => {
+      <div
+        className={isExpanded ? "organism-list-scroll" : undefined}
+        style={{ maxHeight: isExpanded ? 360 : undefined, overflowY: isExpanded ? "auto" : "visible" }}
+      >
+        <Flex direction="column" gap="2">
+          {visibleFacets.map((f) => {
             const active = selected === f.name;
             return (
               <Button
                 key={f.name}
                 variant={active ? "solid" : "soft"}
-                color={active ? "blue" : "gray"}
+                color={active ? undefined : "gray"}
                 onClick={() => onSelect(f.name)}
                 style={{ justifyContent: "space-between", textAlign: "left" }}
               >
@@ -91,7 +85,27 @@ function FilterList({
             </Text>
           ) : null}
         </Flex>
-      </ScrollArea>
+      </div>
+
+      {hasMoreThanTop ? (
+        <Button
+          size="1"
+          variant="soft"
+          color="gray"
+          onClick={() => setIsExpanded((prev) => !prev)}
+        >
+          {isExpanded ? "Show less" : `Show ${facets.length - 5} more`}
+        </Button>
+      ) : null}
+      <style jsx>{`
+        .organism-list-scroll {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .organism-list-scroll::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </Flex>
   );
 }
@@ -113,40 +127,14 @@ export function OrganismFilter({
   const onSelect = (name: string) => onChangeSelected(name);
 
   return (
-    <>
-      {/* Desktop right sidebar */}
-      <Box className="hidden lg:block">
-        <Card className="sticky top-24">
-          <FilterList
-            facets={facets}
-            selected={selected}
-            totalCount={totalCount}
-            onSelect={onSelect}
-            onClear={onClear}
-          />
-        </Card>
-      </Box>
-
-      {/* Mobile: Popover */}
-      <Box className="lg:hidden">
-        <Popover.Root>
-          <Popover.Trigger>
-            <Button variant="soft" style={{ width: "100%" }}>
-              Organism filter {selected ? `• ${selected}` : ""}
-            </Button>
-          </Popover.Trigger>
-
-          <Popover.Content style={{ width: "min(92vw, 420px)" }}>
-            <FilterList
-              facets={facets}
-              selected={selected}
-              totalCount={totalCount}
-              onSelect={onSelect}
-              onClear={onClear}
-            />
-          </Popover.Content>
-        </Popover.Root>
-      </Box>
-    </>
+    <Card>
+      <FilterList
+        facets={facets}
+        selected={selected}
+        totalCount={totalCount}
+        onSelect={onSelect}
+        onClear={onClear}
+      />
+    </Card>
   );
 }

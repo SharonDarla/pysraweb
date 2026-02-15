@@ -8,16 +8,17 @@ export default function MCP() {
       <SearchBar />
       <Flex
         gap="4"
-        py={"4"}
-        ml={{ initial: "1rem", md: "13rem" }}
-        mr={{ initial: "1rem", md: "16rem" }}
+        py={{ initial: "4", md: "4" }}
+        px={{ initial: "4", md: "0" }}
+        ml={{ initial: "0", md: "13rem" }}
+        mr={{ initial: "0", md: "16rem" }}
         direction={"column"}
       >
-        <Text size="8" weight="bold" mb="3">
+        <Text size={{ initial: "6", md: "8" }} weight="bold" mb="3">
           MCP Server
         </Text>
 
-        <Text size="3">
+        <Text size={{ initial: "2", md: "3" }}>
           We offer a remote{" "}
           <Link
             href="https://modelcontextprotocol.io"
@@ -35,20 +36,20 @@ export default function MCP() {
           <Callout.Icon>
             <InfoCircledIcon />
           </Callout.Icon>
-          <Callout.Text>
+          <Callout.Text size={{ initial: "2", md: "3" }}>
             Connect your LLM client using this URL:{" "}
-            <Code variant="soft" size="3">
+            <Code variant="soft" size={{ initial: "1", md: "2" }}>
               https://pysraweb.saketlab.org/api/mcp
             </Code>
           </Callout.Text>
         </Callout.Root>
 
-        <Text size="6" weight="medium">
+        <Text size={{ initial: "4", md: "6" }} weight="medium">
           Setup Guide for Claude Desktop
         </Text>
 
         <Flex direction="column" gap="4">
-          <Text size="3">
+          <Text size={{ initial: "2", md: "3" }}>
             1. Download and install the{" "}
             <Link
               href="https://claude.com/download"
@@ -59,26 +60,30 @@ export default function MCP() {
             </Link>
           </Text>
 
-          <Text size="3">
+          <Text size={{ initial: "2", md: "3" }}>
             2. Open the Claude Desktop configuration file by going to{" "}
             <Text weight="medium">Settings → Developer → Edit Config</Text>
           </Text>
 
-          <Text size="3">
+          <Text size={{ initial: "2", md: "3" }}>
             3. Add the following configuration to the <Code>mcpServers</Code>{" "}
             section:
           </Text>
 
-          <Box>
+          <Box
+            style={{
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
             <Code
               variant="soft"
-              size="2"
+              size={{ initial: "1", md: "2" }}
               style={{
                 display: "block",
                 whiteSpace: "pre",
                 padding: "1rem",
                 borderRadius: "8px",
-                overflowX: "auto",
               }}
             >
               {`"mcpServers": {
@@ -90,9 +95,9 @@ export default function MCP() {
             </Code>
           </Box>
 
-          <Text size="3">4. Restart Claude Desktop to apply the changes</Text>
+          <Text size={{ initial: "2", md: "3" }}>4. Restart Claude Desktop to apply the changes</Text>
 
-          <Text>
+          <Text size={{ initial: "2", md: "3" }}>
             Once configured, you&apos;ll be able to search and explore GEO and
             SRA datasets directly from Claude Desktop conversations.
           </Text>

@@ -582,7 +582,7 @@ export default function ProjectPage()
           gap="4"
           align="center"
           p={"4"}
-          ml={{ md: "8rem" }}
+          ml={{ initial: "0", md: "8rem" }}
           mr={{ md: "16rem" }}
           justify="center"
           direction={"column"}
@@ -605,7 +605,7 @@ export default function ProjectPage()
           gap="2"
           align="center"
           pt={"3"}
-          ml={{ md: "8rem" }}
+          ml={{ initial: "0", md: "8rem" }}
           mr={{ md: "16rem" }}
           justify="center"
         >
@@ -643,10 +643,10 @@ export default function ProjectPage()
       {accession && !isLoading && !isError && project && (
         <>
           <Flex
-            ml={{ md: "12rem" }}
-            mr={{ md: "8rem" }}
+            ml={{ initial: "0", md: "12rem" }}
+            mr={{ initial: "0", md: "8rem" }}
             py="3"
-            px={{ initial: "3" }}
+            px={{ initial: "4", md: "3" }}
             direction="column"
             gap="4"
           >
@@ -867,11 +867,9 @@ export default function ProjectPage()
             <Flex
               align="start"
               gap="2"
-              // mt="3"
               direction="column"
               style={{
                 width: "100%",
-                maxHeight: "500px",
               }}
             >
               {isExperimentsLoading && (
@@ -893,16 +891,22 @@ export default function ProjectPage()
               {!isExperimentsLoading &&
                 experiments &&
                 experiments.length > 0 && (
-                <> <Text color="red">SORT VERSION ACTIVE</Text>
-                  <Table.Root
+                  <div
                     style={{
                       width: "100%",
-                      tableLayout: "fixed",
                       overflowX: "auto",
+                      WebkitOverflowScrolling: "touch",
+                      maxHeight: "500px",
                       overflowY: "auto",
                     }}
-                    variant="surface"
                   >
+                    <Table.Root
+                      style={{
+                        width: "100%",
+                        minWidth: "800px",
+                      }}
+                      variant="surface"
+                    >
 
                     
                         <Table.Header
@@ -1027,7 +1031,7 @@ export default function ProjectPage()
                       })}
                     </Table.Body>
                   </Table.Root>
-                </>
+                  </div>
                 )}
             </Flex>
             <Text weight="medium" size="6">

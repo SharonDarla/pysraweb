@@ -482,8 +482,8 @@ function SortMenu({
           gap="4"
           align="center"
           p={"4"}
-          ml={{ md: "8rem" }}
-          mr={{ md: "16rem" }}
+          ml={{ initial: "0", md: "8rem" }}
+          mr={{ initial: "0", md: "16rem" }}
           justify="center"
           direction={"column"}
         >
@@ -505,8 +505,8 @@ function SortMenu({
           gap="2"
           align="center"
           pt={"3"}
-          ml={{ md: "8rem" }}
-          mr={{ md: "16rem" }}
+          ml={{ initial: "0", md: "8rem" }}
+          mr={{ initial: "0", md: "16rem" }}
           justify="center"
         >
           <Spinner size="3" />
@@ -543,10 +543,10 @@ function SortMenu({
       {accession && !isLoading && !isError && project && (
         <>
           <Flex
-            ml={{ md: "12rem" }}
-            mr={{ md: "8rem" }}
+            ml={{ initial: "0", md: "12rem" }}
+            mr={{ initial: "0", md: "8rem" }}
             py="3"
-            px={{ initial: "3" }}
+            px={{ initial: "4", md: "3" }}
             direction="column"
             gap="4"
           >

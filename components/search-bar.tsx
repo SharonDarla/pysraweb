@@ -1,29 +1,41 @@
 "use client";
 import GitHubButton from "@/components/github-button";
+import Logo from "@/components/logo";
 import SearchHistoryDropdown from "@/components/search-history-dropdown";
 import ThemeToggle from "@/components/theme-toggle";
 import { useSearchQuery } from "@/context/search_query";
 import { useSearchHistory } from "@/utils/useSearchHistory";
 import {
-  CountdownTimerIcon,
-  Cross1Icon,
+  HamburgerMenuIcon,
   MagnifyingGlassIcon,
 } from "@radix-ui/react-icons";
 import {
   Box,
-  Button,
-  Card,
+  DropdownMenu,
   Flex,
+  IconButton,
   Link,
-  Text,
   TextField,
 } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface SearchBarProps {
   initialQuery?: string | null;
 }
+
+const NAV_ITEMS = [
+  {
+    label: "CLI",
+    href: "https://saket-choudhary.me/pysradb/index.html",
+    external: true,
+  },
+  { label: "MCP", href: "/mcp" },
+  { label: "Map", href: "/map" },
+  { label: "Saket Lab", href: "https://saketlab.in/", external: true },
+  { label: "Contact", href: "mailto:saketc@iitb.ac.in", mailto: true },
+  { label: "About", href: "/faq" },
+];
 
 export default function SearchBar({ initialQuery }: SearchBarProps) {
   const { lastSearchQuery, setLastSearchQuery } = useSearchQuery();
@@ -37,7 +49,20 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
   const [activeIndex, setActiveIndex] = useState(-1);
   const { history, saveHistory, performSearch } = useSearchHistory();
   const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleMenuSelect = (item: (typeof NAV_ITEMS)[number]) => {
+    if (item.mailto) {
+      window.location.assign(item.href);
+      return;
+    }
+
+    if (item.external) {
+      window.open(item.href, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    router.push(item.href);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,7 +108,7 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
   return (
     <Flex
       justify={{ initial: "center", md: "between" }}
-      align="center"
+      align={{ initial: "start", md: "center" }}
       p={{ initial: "0", md: "3" }}
       pb={"3"}
       gap={"4"}
@@ -96,6 +121,28 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
         backgroundColor: "inherit",
       }}
     >
+      <Box
+        display={{ initial: "block", md: "none" }}
+        style={{ position: "absolute", top: "0.5rem", left: "0.5rem" }}
+      >
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger>
+            <IconButton variant="ghost" size="3" aria-label="Open navigation menu">
+              <HamburgerMenuIcon width={20} height={20} />
+            </IconButton>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content align="start">
+            {NAV_ITEMS.map((item) => (
+              <DropdownMenu.Item
+                key={item.label}
+                onSelect={() => handleMenuSelect(item)}
+              >
+                {item.label}
+              </DropdownMenu.Item>
+            ))}
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      </Box>
       <Flex
         gap={"4"}
         align={"center"}
@@ -105,15 +152,10 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
       >
         <Link href="/" style={{ textDecoration: "none" }}>
           <Box width={{ initial: "6rem", md: "11rem" }}>
-            <Text
-              color="gray"
-              size={{ initial: "5", md: "8" }}
-              weight={"bold"}
-              style={{ fontFamily: "monospace" }}
-              align={"center"}
-            >
-              pysraweb
-            </Text>
+            <Logo
+              style={{ width: "100%", height: "auto" }}
+              priority
+            />
           </Box>
         </Link>
 
@@ -182,6 +224,12 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
         <ThemeToggle />
         <GitHubButton />
       </Flex>
+      <Box
+        display={{ initial: "block", md: "none" }}
+        style={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}
+      >
+        <ThemeToggle />
+      </Box>
     </Flex>
   );
 }
