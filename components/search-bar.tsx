@@ -165,6 +165,7 @@ export default function SearchBar({ initialQuery }: SearchBarProps) {
         >
           <form onSubmit={handleSubmit}>
             <TextField.Root
+            id="global-search-input"
               size={"3"}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsFocused(true)}
